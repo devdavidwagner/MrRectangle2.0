@@ -5,9 +5,10 @@ import sys
 import pygame
 from pygame.locals import *
 
-from core.stateManager import State
+from core.stateManager import State, GameState
 from core.screens.menu import Menu
 from core.screens.levelManager import LevelManager, Level
+from core.screens.death import Death
 
 def update(dt):
   """
@@ -67,16 +68,25 @@ def runPyGame():
 
   currentLevel = Level.ONE
   levelMan = LevelManager(Level.ONE, screen, screen_width, screen_height)
-
+  deathScreen = Death(screen_width, screen_height)
+  isAlive = True
+  gameState = GameState()
+  
   while True: # Loop forever!
-    if currentState == State.MENU:
+    gameState.get_instance()
+
+    if gameState.state == State.MENU:
       #run menu  
       menu.draw(screen)
       menu.render_options()
 
-    if currentState == State.GAME:
-      #run level 1
+    if gameState.state == State.GAME:
+      #run level 1   
       levelMan.runLevel()
+    
+    if gameState.state == State.DEATH:
+      deathScreen.display(screen)
+      deathScreen.handle_event(event,screen)
 
     #events
     for event in pygame.event.get():
@@ -84,8 +94,8 @@ def runPyGame():
           pygame.quit()
           sys.exit()
 
-      if currentState == State.MENU:
-          currentState = menu.handle_event(event, screen)
+      if gameState.state == State.MENU:
+          menu.handle_event(event, screen)
 
     
     dt = fpsClock.tick(fps)

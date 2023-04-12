@@ -1,5 +1,6 @@
 import pygame
 from core.stateManager import State
+from core.stateManager import State, GameState
 
 class Menu:
     def __init__(self, options, screen_width):
@@ -43,7 +44,9 @@ class Menu:
         pygame.display.update()
 
     def handle_event(self, event, screen):
-        currentState = State.MENU
+        currentState = GameState.get_instance()
+
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP or event.key == pygame.K_w:
                 self.selected -= 1
@@ -56,7 +59,7 @@ class Menu:
             elif event.key == pygame.K_RETURN:
                 if self.selected == 0:
                     # Start the game
-                    currentState = State.GAME
+                    currentState.state = State.GAME
                 elif self.selected == 1:
                     # Show the instructions
                     pass
@@ -65,5 +68,3 @@ class Menu:
                     pygame.quit()
 
         self.draw(screen)
-
-        return currentState
