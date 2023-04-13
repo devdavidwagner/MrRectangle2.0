@@ -22,8 +22,8 @@ class Death:
     def handle_event(self, event, screen):
         currentState = GameState.get_instance()
 
-
-        if event.type == pygame.KEYDOWN:
-            currentState.state = State.GAME
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                currentState.state = State.GAME
 
 

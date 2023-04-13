@@ -12,15 +12,22 @@ class Rectangle(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+            
+
         self.moving = False
+        self.jumping = False
+        self.ticksJumping = 0
         self.ticks = 1
 
-        self.SPEED = 2
+        self.SPEED = 1
         self.GRAVITY = 2
+        self.JUMP_SPEED = 4
+        self.JUMP_LENGTH_IN_TICKS = 40
+        
         
 
-    def Action(self, moving, direction = Direction.RIGHT, falling = False):
-        self.ticks += 1
+    def Action(self, moving, direction = Direction.RIGHT, falling = False, initJump = False):
+        self.ticks += 0.5
         # if moving and direction == direction.RIGHT and self.ticks > 4:
         #     self.rect.x += self.SPEED 
         # if moving and direction == direction.LEFT and self.ticks > 4:
@@ -29,9 +36,24 @@ class Rectangle(pygame.sprite.Sprite):
         if falling and self.ticks > 4:
             self.rect.y += self.GRAVITY
 
+        
+
+        if initJump == True:
+            self.jumping = initJump
+            
+            
+        if self.jumping == True and self.ticks > 4:
+            self.ticksJumping += 1
+            self.rect.y -= self.JUMP_SPEED - self.GRAVITY
+
+        if self.ticksJumping >= self.JUMP_LENGTH_IN_TICKS:
+            self.jumping = False
+            self.falling = True
+            self.ticksJumping = 0
+
+
         if self.ticks > 4:
             self.ticks = 0
-
         # print("Player X = " + str(self.rect.x))
         # print("Player TICK = " + str(self.ticks))
         

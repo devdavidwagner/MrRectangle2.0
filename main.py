@@ -82,6 +82,7 @@ def runPyGame():
 
     if gameState.state == State.GAME:
       #run level 1   
+      levelMan.reset()
       levelMan.runLevel()
     
     if gameState.state == State.DEATH:

@@ -23,11 +23,13 @@ class LevelManager():
         imageCharStillRight = pygame.image.load("assets\sprites\RectangleStillRight.png").convert_alpha()      
         imagecharMoveLeft = pygame.image.load("assets\sprites\RectangleMoveLeft.png").convert_alpha()
         imageCharMoveRight = pygame.image.load("assets\sprites\RectangleMoveRight.png").convert_alpha()
+        imageJumpingLeft = pygame.image.load("assets\sprites\RectangleJumpingLeft.png").convert_alpha()
+        imageJumpingRight = pygame.image.load("assets\sprites\RectangleJumpingRight.png").convert_alpha()
 
         platformBasic = pygame.image.load("assets\sprites\Floor.png").convert_alpha()
         
 
-        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight]
+        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight]
         self.platformImages = [platformBasic]
         self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages)
 

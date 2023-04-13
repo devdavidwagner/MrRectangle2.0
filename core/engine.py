@@ -10,57 +10,96 @@ class Engine():
         self.screen_height = screen_height
         self.currentLevel = currentLevel
         self.font = pygame.font.Font(None, 36)
-        self.font_color = (0, 0, 0)
-        menu_text = self.font.render("Menu", True, self.font_color)
-        self.menu_rect = menu_text.get_rect(center=(self.screen_width/2, 100))
         self.bg_color = (255, 255, 255)
-        self.startingX = 200
-        self.startingY = 400
+        self.startingX = (screen_width / 2) - 50
+        self.startingY = 350
         self.playerImages = playerImages
         self.platformImages = platformImages
         self.player = Rectangle(self.startingX, self.startingY, self.playerImages[1])
-        self.platform = Platform(0, self.startingY + self.player.rect.height, platformImages[0])
+        self.platform = Platform(0, self.startingY + self.player.rect.height, self.platformImages[0])
+
+
+        self.playerImageLeftStill = self.playerImages[0]
+        self.playerImageRightStill = self.playerImages[1]
+        self.playerImageLeftMoving = self.playerImages[2] 
+        self.playerImageRightMoving = self.playerImages[3]
+        self.playerImageLeftJumping = self.playerImages[4] 
+        self.playerImageRightJumping = self.playerImages[5]
+        self.lastDirection = Direction.RIGHT
+        
         
 
     def reset(self):
-        self.font = pygame.font.Font(None, 36)
-        self.font_color = (0, 0, 0)
-        menu_text = self.font.render("Menu", True, self.font_color)
-        self.menu_rect = menu_text.get_rect(center=(self.screen_width/2, 100))
-        self.bg_color = (255, 255, 255)
-        self.startingX = 200
-        self.startingY = 400
         self.player = Rectangle(self.startingX, self.startingY, self.playerImages[1])
         self.platform = Platform(0, self.startingY + self.player.rect.height, self.platformImages[0])
-        
 
+    
     def runGame(self):
+        ticks = 0
         engineOn = True
         self.objects = pygame.sprite.Group()
         self.objects.add(self.player)
         self.objects.add(self.platform)
+
         while engineOn:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     
+            ticks += 1
 
+             
+            #collision
+            playerOffPlat = True
+            if pygame.sprite.collide_rect(self.player, self.platform) and self.platform.rect.top > self.player.rect.y:
+                self.player.Action(False, None, False)  #on platform
+                print("PLAYER ON PLATFORM")
+            else :
+                self.player.Action(False, None, True) #falling
+                print("PLAYER FALLING")
+
+
+
+            leftLimitUnderY = self.player.rect.left
+            rightLimitUnderY = self.player.rect.left
 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RIGHT] or keys[pygame.K_d] and self.player.rect.right < self.screen_width:
                 self.player.Action(True, Direction.RIGHT)
-                self.platform.Move(self.player.SPEED, Direction.RIGHT)
-                self.player.ActiveSprite(self.playerImages[3])
-            if keys[pygame.K_LEFT] or keys[pygame.K_a] and self.player.rect.left > 0:
+                self.lastDirection = Direction.RIGHT
+                self.player.ActiveSprite(self.playerImageRightMoving)          
+                if self.platform.rect.left < rightLimitUnderY:
+                    self.platform.Move(self.player.SPEED, Direction.RIGHT)
+                elif pygame.sprite.collide_rect(self.player, self.platform):
+                    self.platform.Move(self.player.SPEED, Direction.RIGHT)
+                    
+                
+            elif keys[pygame.K_LEFT] or keys[pygame.K_a] and self.player.rect.left > 0:
                 self.player.Action(True, Direction.LEFT)
-                self.platform.Move(self.player.SPEED, Direction.LEFT)
-                self.player.ActiveSprite(self.playerImages[2])
+                self.lastDirection = Direction.LEFT
+                self.player.ActiveSprite(self.playerImageLeftMoving)     
 
-
-            if not self.player.rect.colliderect(self.platform.rect):
-                self.player.Action(False, None, True)
+                if  self.platform.rect.right < leftLimitUnderY:
+                    self.platform.Move(self.player.SPEED, Direction.LEFT)
+                elif pygame.sprite.collide_rect(self.player, self.platform):
+                    self.platform.Move(self.player.SPEED, Direction.LEFT)
             else:
-                self.player.Action(False, None, False)
+                if self.lastDirection == Direction.RIGHT:
+                        self.player.ActiveSprite(self.playerImageRightStill) 
+                elif self.lastDirection == Direction.LEFT:
+                        self.player.ActiveSprite(self.playerImageLeftStill) 
+
+
+            if keys[pygame.K_SPACE] and self.lastDirection == Direction.RIGHT:
+                self.player.ActiveSprite(self.playerImageRightJumping)
+                self.player.Action(True, Direction.RIGHT, False, True)
+            
+            elif keys[pygame.K_SPACE] and self.lastDirection == Direction.LEFT:
+                self.player.ActiveSprite(self.playerImageLeftJumping)  
+                self.player.Action(True, Direction.LEFT, False, True)
+
+
+
 
 
             #death
