@@ -8,11 +8,13 @@ class Direction(Enum):
 class Rectangle(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
         super().__init__()
-        self.image = pygame.transform.scale(image, (40, 80))
+        self.image = image
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-            
+        self.rect.center = (x, y)
+
+        self.rectCollide = pygame.rect.Rect((0,0), (self.image.get_width(), self.image.get_height()))
+        self.rectCollide.center = self.rect.center
+
 
         self.moving = False
         self.jumping = False
@@ -36,6 +38,8 @@ class Rectangle(pygame.sprite.Sprite):
         if falling and self.ticks > 4:
             self.rect.y += self.GRAVITY
 
+        self.moving = moving
+
         
 
         if initJump == True:
@@ -56,6 +60,8 @@ class Rectangle(pygame.sprite.Sprite):
             self.ticks = 0
         # print("Player X = " + str(self.rect.x))
         # print("Player TICK = " + str(self.ticks))
+
+        self.rectCollide.center = self.rect.center
         
 
 
