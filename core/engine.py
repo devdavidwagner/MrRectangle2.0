@@ -2,6 +2,7 @@ import pygame
 from assets.sprites.objects.rectangle import Rectangle, Direction
 from assets.sprites.objects.platform import Platform
 from core.stateManager import State, GameState
+from core.helpers.collideHelper import CollisionDetection
 
 class Engine():
     def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list):
@@ -14,7 +15,7 @@ class Engine():
         self.startingX = (screen_width / 2) - 50
         self.startingY = 350
         self.startingXPlayer = (screen_width / 2) - 50
-        self.startingYPlayer = 0
+        self.startingYPlayer = self.startingY - 64
         self.playerImages = playerImages
         self.platformImages = platformImages
         self.player = Rectangle(self.startingXPlayer, self.startingYPlayer, self.playerImages[1])
@@ -40,7 +41,9 @@ class Engine():
 
         self.platform = Platform(0, self.startingY + self.player.rect.height, self.platformImages[0])
         self.platformSmall = Platform(self.screen_width + 300, self.startingY + self.player.rect.height, self.platformImages[1])
-        self.platforms = [self.platform, self.platformSmall]
+        self.platformSmall2 = Platform(self.screen_width + self.platformSmall.rect.width + 900, self.startingY + self.player.rect.height, self.platformImages[1])
+        self.platformSmall3 = Platform(self.screen_width + 2500, self.startingY + self.player.rect.height, self.platformImages[1])
+        self.platforms = [self.platform, self.platformSmall, self.platformSmall2, self.platformSmall3]
 
     
     def runGame(self):
@@ -51,76 +54,98 @@ class Engine():
         for platform in self.platforms:
             self.objects.add(platform)
 
+
+        customDetect = CollisionDetection()
         while engineOn:
+            ticks += 1
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+
+                if event.type == pygame.KEYDOWN:
+                 if event.key == pygame.K_SPACE and not self.player.jumping and not self.player.falling:
+                     #JUMPING
+                    self.player.jumping = True
+           
     
                     
-            ticks += 1
+           
 
              
             #collision
-            currentPlatform = None
+            currentPlatformSide = None
+            currentPlatform= None
             onPlatform = False
             for platform in self.platforms:
-                if pygame.rect.Rect.colliderect(self.player.rectCollide, platform.rectCollide):
-                    self.player.Action(False, None, False)  #on platform                            
-                    onPlatform = True
-                    currentPlatform = platform
-                    print("PLAYER ON PLATFORM")
-                    break
+                if customDetect.check_collisionTop(self.player.rect, platform.rect):
+                        # Stop the player sprite at the top of the platform sprite
+                        self.player.Action(False, None, False, False)  #on platform                            
+                        onPlatform = True
+                        currentPlatform = platform
+                        print("PLAYER ON PLATFORM")
+                        break
+                
+            for platform in self.platforms:
+                if customDetect.check_collisionRight(platform.rect, self.player.rect):                    
+                        currentPlatformSide = platform
+                        print("PLAYER BESIDE PLATFORM")
+                        break
+                if customDetect.check_collisionLeft(platform.rect, self.player.rect):                         
+                        currentPlatformSide = platform
+                        print("PLAYER BESIDE PLATFORM")
+                        break
+   
 
 
 
             if not onPlatform:
-                self.player.Action(False, None, True) #falling
+                self.player.Action(False, None, True,False) #falling
                 print("PLAYER FALLING")
-            else:
-                self.player.falling = False
+ 
 
             keys = pygame.key.get_pressed()
 
-        #KEYS/ACTIONS
-            #JUMPING
-            if keys[pygame.K_SPACE] and self.lastDirection == Direction.RIGHT:
-                self.player.Action(False, Direction.RIGHT, False, True)
+        #KEYS/ACTIONS     
+         #   JUMPING 
             
-            elif keys[pygame.K_SPACE] and self.lastDirection == Direction.LEFT:
-                self.player.Action(False, Direction.LEFT, False, True)
+            if self.player.jumping == True and self.lastDirection == Direction.RIGHT:
+                    self.player.Action(True, Direction.RIGHT, False, True)
+                
+            elif self.player.jumping == True and self.lastDirection == Direction.LEFT:
+                    self.player.Action(True, Direction.LEFT, False, True)
 
-
-            
             #MOVING RIGHT
             stuck = False
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 self.player.Action(True, Direction.RIGHT)
                 self.lastDirection = Direction.RIGHT
-
+              
                 
-                for platform in self.platforms:   
-                    if onPlatform: 
+                noMovement = False
+                for platform in self.platforms:  
+                    if  customDetect.check_collisionRight(self.player.rect, platform.rect) and currentPlatformSide == platform:
+                        noMovement = True 
+                 
+                if not noMovement:
+                   for platform in self.platforms: 
                         platform.Move(self.player.SPEED, Direction.RIGHT)
-                    elif not onPlatform and not pygame.sprite.collide_rect(self.player, platform) and not stuck:
-                        platform.Move(self.player.SPEED, Direction.RIGHT) 
-                    else:
-                        stuck = True
-                      
-                
-            
+                   
                     
             #MOVING LEFT
             elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
                 self.player.Action(True, Direction.LEFT)
                 self.lastDirection = Direction.LEFT
            
+                noMovement = False
                 for platform in self.platforms:  
-                    if onPlatform:
+                    if  not onPlatform and customDetect.check_collisionLeft(self.player.rect, platform.rect) and currentPlatformSide == platform:
+                        noMovement = True 
+
+                if not noMovement:
+                   for platform in self.platforms: 
                         platform.Move(self.player.SPEED, Direction.LEFT)
-                    elif not onPlatform and not pygame.sprite.collide_rect(self.player, platform) and not stuck:
-                        platform.Move(self.player.SPEED, Direction.LEFT) 
-                    else:
-                        stuck = True
+            
+          
 
             #STILL
             else:
@@ -157,6 +182,11 @@ class Engine():
                 #dead
                 gameState = GameState.get_instance()
                 gameState.state = State.DEATH
+
+            if ticks % 20 != 1:
+                print("Player: Y " + str(self.player.rect.y) + " , " + " Player: X " + str(self.player.rect.x))
+                print("Current Playform: Y " + str(self.platform.rect.y) + " , " + " Platform: X " + str(self.platform.rect.x) + " TOP: " + str(self.platform.rect.top))
+
 
 
             self.draw(self.objects)
