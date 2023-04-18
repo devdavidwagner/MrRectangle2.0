@@ -28,11 +28,17 @@ class LevelManager():
 
         platformBig = pygame.image.load("assets\sprites\BigPlatform.png").convert_alpha()
         platformSmall = pygame.image.load("assets\sprites\SmallPlatform.png").convert_alpha()
+
+        para0 = pygame.image.load("assets\sprites\para0.png").convert_alpha()
+        para1 = pygame.image.load("assets\sprites\para1.png").convert_alpha()
+        para2 = pygame.image.load("assets\sprites\para2.png").convert_alpha()
+        para3 = pygame.image.load("assets\sprites\para3.png").convert_alpha()
         
 
         self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight]
         self.platformImages = [platformBig, platformSmall]
-        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages)
+        self.parallaxImages = [para0, para1, para2, para3] #BACKGROUNDS
+        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages)
 
 
     def runLevel(self):

@@ -12,64 +12,55 @@ class Rectangle(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 
-
         self.moving = False
         self.jumping = False
         self.fallAfterJump = False
         self.falling = False
-        self.ticksJumping = 0
-        self.ticksFallingAfterJump = 0
+        self.ticksJumping = 1
+        self.ticksFallingAfterJump = 1
         self.ticks = 1
 
-        self.SPEED = 1
-        self.GRAVITY = 1
+        self.SPEED = 4
+        self.GRAVITY = 2
         self.JUMP_SPEED = 4
-        self.JUMP_LENGTH_IN_TICKS = 40
+        self.JUMP_LENGTH_IN_TICKS = 80
         self.FALL_LENGTH_IN_TICKS = 40
         
         
 
-    def Action(self, moving, direction = Direction.RIGHT, falling = False, initJump = False):
-        self.ticks += 1
-        # if moving and direction == direction.RIGHT and self.ticks > 4:
-        #     self.rect.x += self.SPEED 
-        # if moving and direction == direction.LEFT and self.ticks > 4:
-        #     self.rect.x -= self.SPEED 
-
-    
+    def Action(self, moving, direction = Direction.RIGHT, falling = False, initJump = False):  
         self.moving = moving
         self.falling = falling
+        self.ticks += 1
             
-
-        if initJump == True:
+        if initJump == True and not self.jumping and not self.falling:
             self.jumping = initJump
-            
-
-        if self.fallAfterJump and self.ticks % 30 == 2 and not self.falling:
-            self.ticksFallingAfterJump += 1
-            self.rect.y += self.GRAVITY
-        
-        if self.falling and not self.jumping:
+                   
+        if self.falling and not self.jumping or self.fallAfterJump:
             self.rect.y += self.GRAVITY
 
+        if self.ticks % 20 == 1:
+            if  self.fallAfterJump:
+                self.ticksFallingAfterJump += 1
+                self.rect.y += self.GRAVITY
+
             
-        if self.jumping == True and self.ticks % 40 == 2:
-            self.ticksJumping += 1
-            self.rect.y -= self.JUMP_SPEED - self.GRAVITY
+            if self.jumping == True:
+                self.ticksJumping += 1
+                self.rect.y -= self.JUMP_SPEED - self.GRAVITY
 
-        if self.ticksJumping >= self.JUMP_LENGTH_IN_TICKS:
-            self.jumping = False
-            self.falling = True
-            self.ticksJumping = 0
 
-        if self.ticksFallingAfterJump >= self.FALL_LENGTH_IN_TICKS:
-            self.fallAfterJump = False
-            self.ticksFallingAfterJump = 0
+            if self.JUMP_LENGTH_IN_TICKS % self.ticksJumping == 1:
+                self.jumping = False
+                self.fallAfterJump = True
+                self.ticksJumping = 1
 
-        # print("Player X = " + str(self.rect.x))
-        # print("Player TICK = " + str(self.ticks))
+            if self.FALL_LENGTH_IN_TICKS % self.ticksFallingAfterJump  == 1:
+                self.fallAfterJump = False
+                self.ticksFallingAfterJump = 1
         
 
 
     def ActiveSprite(self, image):
         self.image =  pygame.transform.scale(image, (40, 80))
+
