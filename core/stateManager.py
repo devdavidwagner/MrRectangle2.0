@@ -5,6 +5,7 @@ class State(Enum):
     GAME = 2
     DEATH = 3
     RESTART = 4
+    WIN = 5
 
 class GameState:
     __instance = None

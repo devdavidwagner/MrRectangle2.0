@@ -9,6 +9,7 @@ from core.stateManager import State, GameState
 from core.screens.menu import Menu
 from core.screens.levelManager import LevelManager, Level
 from core.screens.death import Death
+from core.screens.win import Win
 
 def update(dt):
   """
@@ -69,6 +70,7 @@ def runPyGame():
   currentLevel = Level.ONE
   levelMan = LevelManager(Level.ONE, screen, screen_width, screen_height)
   deathScreen = Death(screen_width, screen_height)
+  winScreen = Win(screen_width, screen_height)
   isAlive = True
   gameState = GameState()
   
@@ -88,6 +90,10 @@ def runPyGame():
     if gameState.state == State.DEATH:
       deathScreen.display(screen)
       deathScreen.handle_event(event,screen)
+
+    if gameState.state == State.WIN:
+      winScreen.display(screen)
+      winScreen.handle_event(event,screen)
 
     #events
     for event in pygame.event.get():

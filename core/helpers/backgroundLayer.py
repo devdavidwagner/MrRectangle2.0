@@ -1,5 +1,5 @@
 import pygame
-from assets.sprites.objects.rectangle import Direction
+from assets.objects.player import Direction
 
 #rect 1 = player
 #rect 2 = platform/object
@@ -14,16 +14,18 @@ class BackgroundLayer(pygame.sprite.Sprite):
         self.speed = speed
         self.screen_width = screen_width
         self.rect.topleft = (x,y)
+        self.ticks = 1
 
-    def move(self, direction):       
+    def move(self, direction, object_distance_speed):       
         if direction == Direction.LEFT:
-            self.rect.x += self.speed
+            self.rect.x += object_distance_speed
         if direction == Direction.RIGHT:
-            self.rect.x -= self.speed
+            self.rect.x -= object_distance_speed
 
-    def update(self, direction, noMovement):
+
+    def update(self, direction, noMovement, object_distance_speed):
         if not noMovement:
-            self.move(direction)
+            self.move(direction, object_distance_speed)
 
 
    

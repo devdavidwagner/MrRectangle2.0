@@ -5,7 +5,7 @@ class Direction(Enum):
     LEFT = 1
     RIGHT = 2
 
-class Rectangle(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
         super().__init__()
         self.image = image
@@ -23,7 +23,7 @@ class Rectangle(pygame.sprite.Sprite):
         self.SPEED = 4
         self.GRAVITY = 2
         self.JUMP_SPEED = 4
-        self.JUMP_LENGTH_IN_TICKS = 80
+        self.JUMP_LENGTH_IN_TICKS = 60
         self.FALL_LENGTH_IN_TICKS = 40
         
         
@@ -40,20 +40,19 @@ class Rectangle(pygame.sprite.Sprite):
             self.rect.y += self.GRAVITY
 
         if self.ticks % 20 == 1:
-            if  self.fallAfterJump:
-                self.ticksFallingAfterJump += 1
-                self.rect.y += self.GRAVITY
-
             
             if self.jumping == True:
                 self.ticksJumping += 1
                 self.rect.y -= self.JUMP_SPEED - self.GRAVITY
 
-
             if self.JUMP_LENGTH_IN_TICKS % self.ticksJumping == 1:
                 self.jumping = False
                 self.fallAfterJump = True
                 self.ticksJumping = 1
+
+            if  self.fallAfterJump:
+                self.ticksFallingAfterJump += 1
+                self.rect.y += self.GRAVITY
 
             if self.FALL_LENGTH_IN_TICKS % self.ticksFallingAfterJump  == 1:
                 self.fallAfterJump = False

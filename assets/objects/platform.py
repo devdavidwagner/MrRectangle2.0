@@ -1,5 +1,5 @@
 import pygame
-from assets.sprites.objects.rectangle import Direction
+from assets.objects.player import Direction
 from core.helpers.collideHelper import CollisionDetection
 
 class Platform(pygame.sprite.Sprite):
@@ -7,16 +7,20 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         self.image = image
         self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect.x = x
+        self.rect.y = y
         self.speed = 2
         self.customDetect = CollisionDetection()
+        self.collideRect = pygame.Rect(x, y, 450, 70)
     
     def move(self, direction):       
         if direction == Direction.LEFT:
             self.rect.x += self.speed
+            self.collideRect.x += self.speed
         if direction == Direction.RIGHT:
             self.rect.x -= self.speed
+            self.collideRect.x -= self.speed
 
     def update(self, onPlatform, playerRect, direction = Direction.RIGHT, noMovement = False):
-            if not noMovement:
-                self.move(direction)
+        if not noMovement:
+            self.move(direction)
