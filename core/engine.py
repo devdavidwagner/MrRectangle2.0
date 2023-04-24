@@ -1,6 +1,7 @@
 import pygame
 import time
 from assets.objects.player import Player, Direction
+from assets.objects.enemy import Enemy
 from assets.objects.platform import Platform
 from core.stateManager import State, GameState
 from core.helpers.collideHelper import CollisionDetection
@@ -10,7 +11,7 @@ from assets.objects.endPlatform import EndPlatform
 from assets.objects.startPlatform import StartPlatform
 
 class Engine():
-    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list):
+    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list):
         self.screen = screen
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -29,18 +30,22 @@ class Engine():
         self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1])
 
         self.startPlatform = StartPlatform(self.startingX, self.startingY_StartPlatform, self.platformImages[0])
-        self.platformSmall = Platform(self.startingX + 1300, self.startingY, self.platformImages[1])
+        self.platformSmall2 = Platform(self.startingX + 1600, self.startingY, self.platformImages[1])
+        self.platformSmall3 = Platform(self.startingX + 2700, self.startingY, self.platformImages[1])
+        self.platformSmall4 = Platform(self.startingX + 3400, self.startingY, self.platformImages[1])
+        self.platformSmall5 = Platform(self.startingX + 4100, self.startingY, self.platformImages[1])
+        self.platformSmall6 = Platform(self.startingX + 4800, self.startingY, self.platformImages[1])
         self.endPlatform = EndPlatform(self.endingX, self.startingY, self.platformImages[2])
 
-        self.platforms = [self.startPlatform, self.platformSmall, self.endPlatform]
-
+        self.platforms = [self.startPlatform,  self.platformSmall2, self.platformSmall3, 
+                        self.platformSmall4, self.platformSmall5, self.platformSmall6, self.endPlatform]
         self.noMovement = False
 
         self.parallaxImages = parallaxImages
 
-        self.cloudSpeed = 1
-        self.backgroundSpeed = 1
- 
+        self.cloudSpeed = 400
+        self.backgroundSpeed = 300
+        self.backgroundSpeed2 = 250
         #background
         self.background_0 = BackgroundLayer(0,0,self.screen, self.screen_width, self.screen_height, self.screen_width, self.parallaxImages[0], 0)
 
@@ -57,6 +62,10 @@ class Engine():
         self.playerImageLeftJumping = self.playerImages[4] 
         self.playerImageRightJumping = self.playerImages[5]
         self.lastDirection = Direction.RIGHT
+
+        #enemies
+        self.enemyImages = enemyImages
+        self.enemy = Enemy(self.startingXPlayer, self.startingYPlayer, self.enemyImages[0])
         
         
         self.playerOnPlatform = False
@@ -72,15 +81,14 @@ class Engine():
 
         
         self.startPlatform = StartPlatform(self.startingX, self.startingY_StartPlatform, self.platformImages[0])
-        self.platformSmall = Platform(self.startingX + 1300, self.startingY, self.platformImages[1])
-        self.platformSmall2 = Platform(self.startingX + 2000, self.startingY, self.platformImages[1])
+        self.platformSmall2 = Platform(self.startingX + 1600, self.startingY, self.platformImages[1])
         self.platformSmall3 = Platform(self.startingX + 2700, self.startingY, self.platformImages[1])
         self.platformSmall4 = Platform(self.startingX + 3400, self.startingY, self.platformImages[1])
         self.platformSmall5 = Platform(self.startingX + 4100, self.startingY, self.platformImages[1])
         self.platformSmall6 = Platform(self.startingX + 4800, self.startingY, self.platformImages[1])
         self.endPlatform = EndPlatform(self.endingX, self.startingY, self.platformImages[2])
 
-        self.platforms = [self.startPlatform, self.platformSmall, self.platformSmall2, self.platformSmall3, 
+        self.platforms = [self.startPlatform,  self.platformSmall2, self.platformSmall3, 
                           self.platformSmall4, self.platformSmall5, self.platformSmall6, self.endPlatform]
         
         #background
@@ -121,6 +129,8 @@ class Engine():
             platform_group.add(platform)
             self.objects.add(platform)
 
+        #enemy
+        self.objects.add(self.enemy)
         #player
         self.objects.add(self.player)
         last_time = 0
@@ -133,9 +143,10 @@ class Engine():
             last_time = current_time
             print(f"Current Time: {current_time} Delta Time: {delta_time} Last Time: {current_time}")
             
-            # Calculate the distance that the clouds should move this frame
+            # Calculate the distance that the clouds/bg should move this frame
             cloud_distance = self.cloudSpeed * delta_time / 1000
             bg_distance = self.backgroundSpeed * delta_time / 1000
+            bg_distance2 = self.backgroundSpeed * delta_time / 1000
             print(f"Cloud Speed/Dist: {cloud_distance} BG Speed/Dist: {bg_distance}")
 
             #events
@@ -191,7 +202,8 @@ class Engine():
                 self.player.Action(True, Direction.RIGHT)
                 self.lastDirection = Direction.RIGHT
                 self.backgroundManagerHill.update(Direction.RIGHT, self.noMovement, bg_distance)                   
-                self.backgroundManagerMtn.update(Direction.RIGHT, self.noMovement, bg_distance)  
+                self.backgroundManagerMtn.update(Direction.RIGHT, self.noMovement, bg_distance2)  
+                self.backgroundManagerCloud.update(Direction.RIGHT, self.noMovement, cloud_distance) 
                 for platform in self.platforms:                           
                     platform.update(self.playerOnPlatform, self.player.rect, Direction.RIGHT, self.noMovement)                
             #MOVING LEFT
@@ -199,7 +211,8 @@ class Engine():
                 self.player.Action(True, Direction.LEFT)
                 self.lastDirection = Direction.LEFT
                 self.backgroundManagerHill.update(Direction.LEFT, self.noMovement, bg_distance)    
-                self.backgroundManagerMtn.update(Direction.LEFT, self.noMovement, bg_distance)    
+                self.backgroundManagerMtn.update(Direction.LEFT, self.noMovement, bg_distance2)    
+                self.backgroundManagerCloud.update(Direction.LEFT, self.noMovement, cloud_distance) 
                 for platform in self.platforms:                         
                     platform.update(self.playerOnPlatform, self.player.rect, Direction.LEFT, self.noMovement)                             
             #STILL
@@ -211,7 +224,12 @@ class Engine():
 
 
         #environment
-            self.backgroundManagerCloud.update(Direction.LEFT, self.noMovement, cloud_distance) 
+
+
+        #enemies
+
+            self.enemy.Action(True, Direction.LEFT)
+          
 
 
         #set sprites

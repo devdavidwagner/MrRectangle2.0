@@ -20,6 +20,10 @@ class LevelManager():
         self.death = False
         self.spriteWidth = 14
         self.spriteHeight = 24
+
+        self.enemyWidth = 25
+        self.enemyHeight = 18
+        self.enemyYRow = 52
     
         spriteSheet = SpriteSheet("assets\sprites\spriteSheet.png")
        # 0, 14, 28, 42, 56, 70,
@@ -33,6 +37,11 @@ class LevelManager():
         imageCharStillLeft = spriteSheet.load_image(self.spriteWidth * 3,0,self.spriteWidth, self.spriteHeight)       
         imagecharMoveLeft = spriteSheet.load_image(self.spriteWidth * 4,0,self.spriteWidth, self.spriteHeight)
         imageJumpingLeft = spriteSheet.load_image(self.spriteWidth * 5,0,self.spriteWidth, self.spriteHeight)
+
+        enemyLeft = spriteSheet.load_image(0,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
+        enemyLeft2 = spriteSheet.load_image(self.enemyWidth,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
+        enemyLeft3 = spriteSheet.load_image(self.enemyWidth * 2,self.enemyYRow ,self.enemyWidth, self.enemyHeight)  
+
 
         
         platformSmall = pygame.image.load("assets\sprites\SmallPlatform.png").convert_alpha()
@@ -48,7 +57,8 @@ class LevelManager():
         self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight]
         self.platformImages = [platformStart, platformSmall, platformBig]
         self.parallaxImages = [para0, para1, para2, para3] #BACKGROUNDS
-        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages)
+        self.enemyImages = [enemyLeft, enemyLeft2, enemyLeft3]
+        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages)
 
 
     def runLevel(self):
