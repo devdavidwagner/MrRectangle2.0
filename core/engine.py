@@ -39,6 +39,7 @@ class Engine():
 
         self.platforms = [self.startPlatform,  self.platformSmall2, self.platformSmall3, 
                         self.platformSmall4, self.platformSmall5, self.platformSmall6, self.endPlatform]
+        
         self.noMovement = False
 
         self.parallaxImages = parallaxImages
@@ -65,12 +66,14 @@ class Engine():
 
         #enemies
         self.enemyImages = enemyImages
-        self.enemy = Enemy(self.startingXPlayer, self.startingYPlayer, self.enemyImages[0])
-        
+        self.startingEnemy = 1000
+        self.startingYEnemy = self.startingY - 18 
+        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0])
         
         self.playerOnPlatform = False
         self.noMovement = False
         self.playerWin = False
+        self.currentPlatform = None
 
         self.collisionDetect = CollisionDetection()
         
@@ -99,10 +102,13 @@ class Engine():
         self.backgroundManagerHill = BackgroundManager(self.player, self.screen,  self.screen_height, self.screen_width, self.parallaxImages[2], 2)
         self.backgroundManagerMtn = BackgroundManager(self.player, self.screen,  self.screen_height, self.screen_width, self.parallaxImages[3], 3)
         
+        #enemies
+        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0])
 
         self.playerOnPlatform = False
         self.noMovement = False
         self.playerWin = False
+        self.currentPlatform = None
         
 
 
@@ -134,6 +140,7 @@ class Engine():
         #player
         self.objects.add(self.player)
         last_time = 0
+        self.movingTicks = 0
         while engineOn:
             self.ticks += 1
 
@@ -153,7 +160,6 @@ class Engine():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-
                 if event.type == pygame.KEYDOWN:
                  if event.key == pygame.K_SPACE and not self.player.jumping and not self.player.falling:
                      #JUMPING
@@ -165,7 +171,8 @@ class Engine():
             #collision (on platform)        
             for platform in self.platforms:            
                 if self.collisionDetect.check_collisionTop(self.player.rect, platform.collideRect):
-                    self.playerOnPlatform = True          
+                    self.playerOnPlatform = True
+                    self.currentPlatform = platform          
                     if platform is self.endPlatform:
                         self.playerWin = True        
                     break
@@ -204,6 +211,7 @@ class Engine():
                 self.backgroundManagerHill.update(Direction.RIGHT, self.noMovement, bg_distance)                   
                 self.backgroundManagerMtn.update(Direction.RIGHT, self.noMovement, bg_distance2)  
                 self.backgroundManagerCloud.update(Direction.RIGHT, self.noMovement, cloud_distance) 
+                self.enemy.UpdateEnemy(self.platformSmall2.speed, Direction.RIGHT)
                 for platform in self.platforms:                           
                     platform.update(self.playerOnPlatform, self.player.rect, Direction.RIGHT, self.noMovement)                
             #MOVING LEFT
@@ -213,10 +221,12 @@ class Engine():
                 self.backgroundManagerHill.update(Direction.LEFT, self.noMovement, bg_distance)    
                 self.backgroundManagerMtn.update(Direction.LEFT, self.noMovement, bg_distance2)    
                 self.backgroundManagerCloud.update(Direction.LEFT, self.noMovement, cloud_distance) 
+                self.enemy.UpdateEnemy(self.platformSmall2.speed, Direction.LEFT)
                 for platform in self.platforms:                         
                     platform.update(self.playerOnPlatform, self.player.rect, Direction.LEFT, self.noMovement)                             
             #STILL
             else:
+                self.enemy.UpdateEnemy()
                 if self.lastDirection == Direction.RIGHT:
                     self.player.Action(False, Direction.RIGHT)
                 elif self.lastDirection == Direction.LEFT:
@@ -227,8 +237,33 @@ class Engine():
 
 
         #enemies
+                #spawn at certain platform
+            if self.currentPlatform is not None and self.currentPlatform is self.platformSmall2:
+                self.enemy.Activate(True)
 
-            self.enemy.Action(True, Direction.LEFT)
+            if pygame.Rect.colliderect(self.enemy.rect, self.player.rect):
+                engineOn = False
+                #dead
+                gameState = GameState.get_instance()
+                gameState.state = State.DEATH
+            
+
+            if self.enemy.moving:
+                self.movingTicks += 1
+                print("MOVING TICKS ENEMY:  " + str(self.movingTicks))
+
+                if self.movingTicks > 20:
+                    self.enemy.ActiveSprite(self.enemyImages[0])
+                if self.movingTicks > 80:
+                    self.enemy.ActiveSprite(self.enemyImages[1])
+                if self.movingTicks > 160:
+                    self.enemy.ActiveSprite(self.enemyImages[2])
+                if  self.movingTicks > 240:
+                    self.enemy.ActiveSprite(self.enemyImages[0])
+                    self.movingTicks = 0
+                
+
+            
           
 
 

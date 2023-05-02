@@ -42,6 +42,9 @@ class LevelManager():
         enemyLeft2 = spriteSheet.load_image(self.enemyWidth,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
         enemyLeft3 = spriteSheet.load_image(self.enemyWidth * 2,self.enemyYRow ,self.enemyWidth, self.enemyHeight)  
 
+        enemyLeft = pygame.transform.scale(enemyLeft, (100, 70))
+        enemyLeft2 = pygame.transform.scale(enemyLeft2, (100, 70))
+        enemyLeft3 = pygame.transform.scale(enemyLeft3, (100, 70))
 
         
         platformSmall = pygame.image.load("assets\sprites\SmallPlatform.png").convert_alpha()
