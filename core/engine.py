@@ -65,10 +65,16 @@ class Engine():
         self.lastDirection = Direction.RIGHT
 
         #enemies
+        self.startingEnemy = self.startingXPlayer + 800
+        self.startingYEnemy = self.startingY
+        
         self.enemyImages = enemyImages
-        self.startingEnemy = 1000
-        self.startingYEnemy = self.startingY - 18 
         self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0])
+        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0])
+        self.enemy3 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0])
+
+        self.enemies = [self.enemy,self.enemy2,self.enemy3]
+
         
         self.playerOnPlatform = False
         self.noMovement = False
@@ -104,6 +110,10 @@ class Engine():
         
         #enemies
         self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0])
+        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0])
+        self.enemy3 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0])
+
+        self.enemies = [self.enemy,self.enemy2,self.enemy3]
 
         self.playerOnPlatform = False
         self.noMovement = False
@@ -137,6 +147,13 @@ class Engine():
 
         #enemy
         self.objects.add(self.enemy)
+        enemy_group = pygame.sprite.Group()
+        for enemy in enemy_group:
+            enemy_group.add(enemy)
+            self.objects.add(enemy)
+            enemy.LoadImages(self.enemyImages)
+
+
         #player
         self.objects.add(self.player)
         last_time = 0
@@ -238,29 +255,19 @@ class Engine():
 
         #enemies
                 #spawn at certain platform
-            if self.currentPlatform is not None and self.currentPlatform is self.platformSmall2:
-                self.enemy.Activate(True)
 
-            if pygame.Rect.colliderect(self.enemy.rect, self.player.rect):
-                engineOn = False
-                #dead
-                gameState = GameState.get_instance()
-                gameState.state = State.DEATH
+            for enemy in self.enemies:
+                if self.currentPlatform is not None and self.currentPlatform is self.platformSmall2:
+                    enemy.Activate(True)
+
+                if pygame.Rect.colliderect(enemy.rect, self.player.rect):
+                    engineOn = False
+                    #dead
+                    gameState = GameState.get_instance()
+                    gameState.state = State.DEATH
             
 
-            if self.enemy.moving:
-                self.movingTicks += 1
-                print("MOVING TICKS ENEMY:  " + str(self.movingTicks))
-
-                if self.movingTicks > 20:
-                    self.enemy.ActiveSprite(self.enemyImages[0])
-                if self.movingTicks > 80:
-                    self.enemy.ActiveSprite(self.enemyImages[1])
-                if self.movingTicks > 160:
-                    self.enemy.ActiveSprite(self.enemyImages[2])
-                if  self.movingTicks > 240:
-                    self.enemy.ActiveSprite(self.enemyImages[0])
-                    self.movingTicks = 0
+                
                 
 
             

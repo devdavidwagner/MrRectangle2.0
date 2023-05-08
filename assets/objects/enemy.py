@@ -22,8 +22,12 @@ class Enemy(pygame.sprite.Sprite):
         self.JUMP_SPEED = 4
         self.JUMP_LENGTH_IN_TICKS = 60
         self.FALL_LENGTH_IN_TICKS = 40
+        self.movingTicks = 0
+        self.enemyImages = []
         
-        
+
+    def LoadImages(self, images):
+        self.enemyImages = images    
     
     def Activate(self, spawn):
         if spawn != self.isSpawned:
@@ -31,10 +35,22 @@ class Enemy(pygame.sprite.Sprite):
 
     def UpdateEnemy(self,playerSpeed = 0, direction = None):
         if self.moving == True:
-            if direction is None or direction == Direction.RIGHT:
-                self.rect.x -= self.SPEED
-            else:
-                self.rect.x += self.SPEED - playerSpeed
+            self.movingTicks += 1
+
+            if direction == Direction.RIGHT:
+                self.rect.x -= playerSpeed
+            
+            self.rect.x -= self.SPEED
+
+            if self.movingTicks > 20 and len(self.enemyImages) > 0:
+                self.ActiveSprite(self.enemyImages[0])
+            if self.movingTicks > 80 and len(self.enemyImages) > 0:
+                self.ActiveSprite(self.enemyImages[1])
+            if self.movingTicks > 160 and len(self.enemyImages)> 0:
+                self.ActiveSprite(self.enemyImages[2])
+            if  self.movingTicks > 240 and len(self.enemyImages) > 0:
+                self.ActiveSprite(self.enemyImages[0])
+                self.movingTicks = 0
 
 
         print("ENEMY POS: " + str(self.rect.x))
