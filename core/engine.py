@@ -35,7 +35,7 @@ class Engine():
         self.platformSmall4 = Platform(self.startingX + 3400, self.startingY, self.platformImages[1])
         self.platformSmall5 = Platform(self.startingX + 4100, self.startingY, self.platformImages[1])
         self.platformSmall6 = Platform(self.startingX + 4800, self.startingY, self.platformImages[1])
-        self.endPlatform = EndPlatform(self.endingX, self.startingY, self.platformImages[2])
+        self.endPlatform = EndPlatform(self.endingX, self.startingY_StartPlatform, self.platformImages[3])
 
         self.platforms = [self.startPlatform,  self.platformSmall2, self.platformSmall3, 
                         self.platformSmall4, self.platformSmall5, self.platformSmall6, self.endPlatform]
@@ -66,14 +66,30 @@ class Engine():
 
         #enemies
         self.startingEnemy = self.startingXPlayer + 800
-        self.startingYEnemy = self.startingY
+        self.startingYEnemy = self.startingY - enemyImages[0].get_height() / 2
         
         self.enemyImages = enemyImages
-        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0])
-        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0])
-        self.enemy3 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0])
+        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy3 = Enemy(self.startingEnemy + 1500, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy4 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy5 = Enemy(self.startingEnemy + 2200, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy6 = Enemy(self.startingEnemy + 3000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy7 = Enemy(self.startingEnemy + 4000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy8 = Enemy(self.startingEnemy + 4500, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy9 = Enemy(self.startingEnemy + 5000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
 
-        self.enemies = [self.enemy,self.enemy2,self.enemy3]
+        self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages)
+        self.enemy11 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
+        self.enemy12 = Enemy(self.startingEnemy + 4500, 150, self.enemyImages[0], self.enemyImages)
+        self.enemy13 = Enemy(self.startingEnemy + 5000, 200, self.enemyImages[0], self.enemyImages)
+
+        self.enemy14 = Enemy(self.startingEnemy + 1000, 300, self.enemyImages[0], self.enemyImages)
+        self.enemy15 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
+        self.enemy16 = Enemy(self.startingEnemy + 5000, 150, self.enemyImages[0], self.enemyImages)
+        self.enemy17 = Enemy(self.startingEnemy + 5000, 200, self.enemyImages[0], self.enemyImages)
+
+        self.enemies = [self.enemy,self.enemy2,self.enemy3, self.enemy4, self.enemy5, self.enemy6, self.enemy7, self.enemy8, self.enemy9,self.enemy10, self.enemy11, self.enemy12, self.enemy13, self.enemy14, self.enemy15, self.enemy16,  self.enemy17]
 
         
         self.playerOnPlatform = False
@@ -95,7 +111,7 @@ class Engine():
         self.platformSmall4 = Platform(self.startingX + 3400, self.startingY, self.platformImages[1])
         self.platformSmall5 = Platform(self.startingX + 4100, self.startingY, self.platformImages[1])
         self.platformSmall6 = Platform(self.startingX + 4800, self.startingY, self.platformImages[1])
-        self.endPlatform = EndPlatform(self.endingX, self.startingY, self.platformImages[2])
+        self.endPlatform = EndPlatform(self.endingX, self.startingY_StartPlatform, self.platformImages[3])
 
         self.platforms = [self.startPlatform,  self.platformSmall2, self.platformSmall3, 
                           self.platformSmall4, self.platformSmall5, self.platformSmall6, self.endPlatform]
@@ -109,11 +125,28 @@ class Engine():
         self.backgroundManagerMtn = BackgroundManager(self.player, self.screen,  self.screen_height, self.screen_width, self.parallaxImages[3], 3)
         
         #enemies
-        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0])
-        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0])
-        self.enemy3 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0])
+        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy3 = Enemy(self.startingEnemy + 1500, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy4 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy5 = Enemy(self.startingEnemy + 2200, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy6 = Enemy(self.startingEnemy + 3000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy7 = Enemy(self.startingEnemy + 4000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy8 = Enemy(self.startingEnemy + 4500, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy9 = Enemy(self.startingEnemy + 5000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
 
-        self.enemies = [self.enemy,self.enemy2,self.enemy3]
+        self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages)
+        self.enemy11 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
+        self.enemy12 = Enemy(self.startingEnemy + 4500, 150, self.enemyImages[0], self.enemyImages)
+        self.enemy13 = Enemy(self.startingEnemy + 5000, 200, self.enemyImages[0], self.enemyImages)
+
+        self.enemy14 = Enemy(self.startingEnemy + 1000, 300, self.enemyImages[0], self.enemyImages)
+        self.enemy15 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
+        self.enemy16 = Enemy(self.startingEnemy + 5000, 150, self.enemyImages[0], self.enemyImages)
+        self.enemy17 = Enemy(self.startingEnemy + 5000, 200, self.enemyImages[0], self.enemyImages)
+
+        self.enemies = [self.enemy,self.enemy2,self.enemy3, self.enemy4, self.enemy5, self.enemy6, self.enemy7, self.enemy8, self.enemy9,self.enemy10, self.enemy11, self.enemy12, self.enemy13, self.enemy14, self.enemy15, self.enemy16,  self.enemy17]
+
 
         self.playerOnPlatform = False
         self.noMovement = False
@@ -146,7 +179,9 @@ class Engine():
             self.objects.add(platform)
 
         #enemy
-        self.objects.add(self.enemy)
+        for enemy in self.enemies:
+            self.objects.add(enemy)
+       
         enemy_group = pygame.sprite.Group()
         for enemy in enemy_group:
             enemy_group.add(enemy)
@@ -223,48 +258,57 @@ class Engine():
             #MOVING RIGHT
             stuck = False
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                #enemies
+           
                 self.player.Action(True, Direction.RIGHT)
                 self.lastDirection = Direction.RIGHT
                 self.backgroundManagerHill.update(Direction.RIGHT, self.noMovement, bg_distance)                   
                 self.backgroundManagerMtn.update(Direction.RIGHT, self.noMovement, bg_distance2)  
                 self.backgroundManagerCloud.update(Direction.RIGHT, self.noMovement, cloud_distance) 
-                self.enemy.UpdateEnemy(self.platformSmall2.speed, Direction.RIGHT)
                 for platform in self.platforms:                           
-                    platform.update(self.playerOnPlatform, self.player.rect, Direction.RIGHT, self.noMovement)                
+                    platform.update(self.playerOnPlatform, self.player.rect, Direction.RIGHT, self.noMovement)              
             #MOVING LEFT
             elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                 #enemies           
                 self.player.Action(True, Direction.LEFT)
                 self.lastDirection = Direction.LEFT
                 self.backgroundManagerHill.update(Direction.LEFT, self.noMovement, bg_distance)    
                 self.backgroundManagerMtn.update(Direction.LEFT, self.noMovement, bg_distance2)    
                 self.backgroundManagerCloud.update(Direction.LEFT, self.noMovement, cloud_distance) 
-                self.enemy.UpdateEnemy(self.platformSmall2.speed, Direction.LEFT)
                 for platform in self.platforms:                         
-                    platform.update(self.playerOnPlatform, self.player.rect, Direction.LEFT, self.noMovement)                             
+                    platform.update(self.playerOnPlatform, self.player.rect, Direction.LEFT, self.noMovement)                            
             #STILL
             else:
-                self.enemy.UpdateEnemy()
+                #enemies
                 if self.lastDirection == Direction.RIGHT:
                     self.player.Action(False, Direction.RIGHT)
                 elif self.lastDirection == Direction.LEFT:
                     self.player.Action(False, Direction.LEFT)
 
+        #shooting
+            if keys[pygame.MOUSEBUTTONDOWN] or keys[pygame.K_f]:
+                self.player.Action(False,Direction.RIGHT,False,False,True)
 
         #environment
-
-
-        #enemies
-                #spawn at certain platform
-
-            for enemy in self.enemies:
-                if self.currentPlatform is not None and self.currentPlatform is self.platformSmall2:
-                    enemy.Activate(True)
-
+            #enemies        
+            for enemy in self.enemies:    
+                speed = 2
+                
+                if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                    enemy.UpdateEnemyRight(speed)
+                elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                    enemy.UpdateEnemyLeft(speed)  
+                else:
+                    enemy.UpdateEnemy(speed)  
+                    
+                    
                 if pygame.Rect.colliderect(enemy.rect, self.player.rect):
                     engineOn = False
                     #dead
                     gameState = GameState.get_instance()
                     gameState.state = State.DEATH
+           
+                
             
 
                 
@@ -275,6 +319,8 @@ class Engine():
 
 
         #set sprites
+
+            
             #jumping
             if self.player.jumping and self.lastDirection == Direction.RIGHT:
                 self.player.ActiveSprite(self.playerImageRightJumping)
@@ -290,7 +336,11 @@ class Engine():
                 self.player.ActiveSprite(self.playerImageRightMoving)
             elif self.player.moving and self.lastDirection == Direction.LEFT:
                 self.player.ActiveSprite(self.playerImageLeftMoving)
-
+                
+            #shooting
+            elif self.player.shooting:
+                if self.player.shootingTicks > 0 and self.player.shootingTicks < 20:
+                    self.player.ActiveSprite(self.playerImageLeftMoving)
 
 
 

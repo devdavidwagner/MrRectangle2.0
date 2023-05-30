@@ -41,7 +41,7 @@ class LevelManager():
         enemyLeft = spriteSheet.load_image(0,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
         enemyLeft2 = spriteSheet.load_image(self.enemyWidth,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
         enemyLeft3 = spriteSheet.load_image(self.enemyWidth * 2,self.enemyYRow ,self.enemyWidth, self.enemyHeight)  
-
+        
         enemyLeft = pygame.transform.scale(enemyLeft, (100, 70))
         enemyLeft2 = pygame.transform.scale(enemyLeft2, (100, 70))
         enemyLeft3 = pygame.transform.scale(enemyLeft3, (100, 70))
@@ -50,6 +50,7 @@ class LevelManager():
         platformSmall = pygame.image.load("assets\sprites\SmallPlatform.png").convert_alpha()
         platformStart = pygame.image.load("assets\sprites\StartPlatform.png").convert_alpha()
         platformBig = pygame.image.load("assets\sprites\BigPlatform.png").convert_alpha()
+        platformEnd = pygame.image.load("assets\sprites\EndPlatform.png").convert_alpha()
         
         para0 = pygame.image.load("assets\sprites\para0.png").convert_alpha()
         para1 = pygame.image.load("assets\sprites\para1.png").convert_alpha()
@@ -58,7 +59,7 @@ class LevelManager():
         
 
         self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight]
-        self.platformImages = [platformStart, platformSmall, platformBig]
+        self.platformImages = [platformStart, platformSmall, platformBig, platformEnd]
         self.parallaxImages = [para0, para1, para2, para3] #BACKGROUNDS
         self.enemyImages = [enemyLeft, enemyLeft2, enemyLeft3]
         self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages)
