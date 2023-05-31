@@ -15,6 +15,8 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.size
         self.rect.center = (x, y)
 
+
+
         self.moving = False
         self.isSpawned = False
         self.originX = x
@@ -29,6 +31,9 @@ class Enemy(pygame.sprite.Sprite):
         self.FALL_LENGTH_IN_TICKS = 40
         self.movingTicks = 0
         self.enemyImages = allImages
+        self.dying = False
+        self.dead = False
+        self.dyingTicks = 0
         
 
     def LoadImages(self, images):
@@ -40,8 +45,8 @@ class Enemy(pygame.sprite.Sprite):
             
     def UpdateEnemyRight(self,speed):
         self.movingTicks += 1
-        self.rect.x -= self.SPEED_RIGHT
-       # self.rect.x += self.SPEED
+        self.rect.x -= self.SPEED_LEFT    
+       # self.rect.x += self.SPEED / 2
         if self.rect.x < 0:
             self.rect.x = self.originX
 
@@ -54,6 +59,7 @@ class Enemy(pygame.sprite.Sprite):
         if  self.movingTicks > 240 and len(self.enemyImages) > 0:
             self.ActiveSprite(self.enemyImages[0])
             self.movingTicks = 0
+
 
     def UpdateEnemyLeft(self,speed):
         self.movingTicks += 1
@@ -71,12 +77,14 @@ class Enemy(pygame.sprite.Sprite):
             self.ActiveSprite(self.enemyImages[2])
         if  self.movingTicks > 240 and len(self.enemyImages) > 0:
             self.ActiveSprite(self.enemyImages[0])
-            self.movingTicks = 0
+            
+
+
 
     def UpdateEnemy(self,speed):
         self.movingTicks += 1
-        self.rect.x -= self.SPEED_LEFT    
-        self.rect.x += self.SPEED
+        self.rect.x -= self.SPEED / 2    
+    #
         if self.rect.x < 0:
             self.rect.x = self.originX
 
@@ -89,6 +97,22 @@ class Enemy(pygame.sprite.Sprite):
         if  self.movingTicks > 240 and len(self.enemyImages) > 0:
             self.ActiveSprite(self.enemyImages[0])
             self.movingTicks = 0
+
+    def Hit(self):
+        self.dying = True
+
+    def Dying(self):
+        self.rect.y += 2  
+        self.dyingTicks += 1
+        if self.dyingTicks > 0 and len(self.enemyImages) > 0:
+            self.ActiveSprite(self.enemyImages[3])
+        if self.dyingTicks > 120 and len(self.enemyImages) > 0:
+            self.ActiveSprite(self.enemyImages[4])
+        if self.dyingTicks > 240 and len(self.enemyImages)> 0:
+            self.ActiveSprite(self.enemyImages[5])
+            self.dyingTicks = 0
+            self.dead = True
+            self.dying = False
 
 
     def ActiveSprite(self, image):

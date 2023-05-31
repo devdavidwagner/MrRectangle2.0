@@ -21,12 +21,14 @@ class Player(pygame.sprite.Sprite):
         self.ticksFallingAfterJump = 1
         self.ticks = 1
         self.shootingTicks = 1
+        self.projectilesFired = 0
 
         self.SPEED = 4
         self.GRAVITY = 2
         self.JUMP_SPEED = 5
         self.JUMP_LENGTH_IN_TICKS = 60
         self.FALL_LENGTH_IN_TICKS = 40
+        self.SHOOTING_LENGTH_IN_TICKS = 100
         
         
 
@@ -38,6 +40,10 @@ class Player(pygame.sprite.Sprite):
 
         if shooting:
             self.shootingTicks += 1
+        
+        if self.SHOOTING_LENGTH_IN_TICKS < self.shootingTicks:
+            shooting = False
+            self.shootingTicks = 0
             
         if initJump == True and not self.jumping and not self.falling:
             self.jumping = initJump

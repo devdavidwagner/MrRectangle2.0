@@ -38,13 +38,27 @@ class LevelManager():
         imagecharMoveLeft = spriteSheet.load_image(self.spriteWidth * 4,0,self.spriteWidth, self.spriteHeight)
         imageJumpingLeft = spriteSheet.load_image(self.spriteWidth * 5,0,self.spriteWidth, self.spriteHeight)
 
+        imageShootingRight = spriteSheet.load_image(self.spriteWidth * 6,0,self.spriteWidth, self.spriteHeight)     
+        imageShootingRight2 = spriteSheet.load_image(self.spriteWidth * 7,0,self.spriteWidth, self.spriteHeight)     
+        imageShootingRight3 = spriteSheet.load_image(self.spriteWidth * 8,0,self.spriteWidth, self.spriteHeight)     
+        imageShootingRight4 = spriteSheet.load_image(self.spriteWidth * 9,0,self.spriteWidth, self.spriteHeight)  
+
+        playerProjectile = pygame.image.load("assets\sprites\PlayerShot.png").convert_alpha()
+
         enemyLeft = spriteSheet.load_image(0,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
         enemyLeft2 = spriteSheet.load_image(self.enemyWidth,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
-        enemyLeft3 = spriteSheet.load_image(self.enemyWidth * 2,self.enemyYRow ,self.enemyWidth, self.enemyHeight)  
-        
+        enemyLeft3 = spriteSheet.load_image(self.enemyWidth * 2,self.enemyYRow ,self.enemyWidth, self.enemyHeight) 
+
+        enemyDead1 = spriteSheet.load_image(self.enemyWidth * 3,self.enemyYRow,self.enemyWidth, self.enemyHeight)  
+        enemyDead2 = spriteSheet.load_image(self.enemyWidth * 4,self.enemyYRow,self.enemyWidth, self.enemyHeight)  
+        enemyDead3 = spriteSheet.load_image(self.enemyWidth * 5,self.enemyYRow,self.enemyWidth, self.enemyHeight)  
+
         enemyLeft = pygame.transform.scale(enemyLeft, (100, 70))
         enemyLeft2 = pygame.transform.scale(enemyLeft2, (100, 70))
         enemyLeft3 = pygame.transform.scale(enemyLeft3, (100, 70))
+        enemyDead1 = pygame.transform.scale(enemyDead1, (100, 70))
+        enemyDead2 = pygame.transform.scale(enemyDead2, (100, 70))
+        enemyDead3 = pygame.transform.scale(enemyDead3, (100, 70))
 
         
         platformSmall = pygame.image.load("assets\sprites\SmallPlatform.png").convert_alpha()
@@ -58,10 +72,10 @@ class LevelManager():
         para3 = pygame.image.load("assets\sprites\para3.png").convert_alpha()
         
 
-        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight]
+        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile]
         self.platformImages = [platformStart, platformSmall, platformBig, platformEnd]
         self.parallaxImages = [para0, para1, para2, para3] #BACKGROUNDS
-        self.enemyImages = [enemyLeft, enemyLeft2, enemyLeft3]
+        self.enemyImages = [enemyLeft, enemyLeft2, enemyLeft3, enemyDead1, enemyDead2, enemyDead3]
         self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages)
 
 

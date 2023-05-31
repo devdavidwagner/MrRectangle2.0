@@ -9,6 +9,7 @@ from core.helpers.backgroundManager import BackgroundManager
 from core.helpers.backgroundLayer import BackgroundLayer
 from assets.objects.endPlatform import EndPlatform
 from assets.objects.startPlatform import StartPlatform
+from assets.objects.projectile import Projectile
 
 class Engine():
     def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list):
@@ -56,6 +57,9 @@ class Engine():
         self.backgroundManagerMtn = BackgroundManager(self.player, self.screen,  self.screen_height, self.screen_width, self.parallaxImages[3], 3)
         
 
+        self.projectileImage = self.playerImages[10]
+        self.projectilesInAir = []
+
         self.playerImageLeftStill = self.playerImages[0]
         self.playerImageRightStill = self.playerImages[1]
         self.playerImageLeftMoving = self.playerImages[2] 
@@ -81,16 +85,16 @@ class Engine():
 
         self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages)
         self.enemy11 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
-        self.enemy12 = Enemy(self.startingEnemy + 4500, 150, self.enemyImages[0], self.enemyImages)
-        self.enemy13 = Enemy(self.startingEnemy + 5000, 200, self.enemyImages[0], self.enemyImages)
+        self.enemy12 = Enemy(self.startingEnemy + 4500, 140, self.enemyImages[0], self.enemyImages)
+        self.enemy13 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages)
 
         self.enemy14 = Enemy(self.startingEnemy + 1000, 300, self.enemyImages[0], self.enemyImages)
         self.enemy15 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
-        self.enemy16 = Enemy(self.startingEnemy + 5000, 150, self.enemyImages[0], self.enemyImages)
-        self.enemy17 = Enemy(self.startingEnemy + 5000, 200, self.enemyImages[0], self.enemyImages)
+        self.enemy16 = Enemy(self.startingEnemy + 5000, 120, self.enemyImages[0], self.enemyImages)
+        self.enemy17 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages)
 
         self.enemies = [self.enemy,self.enemy2,self.enemy3, self.enemy4, self.enemy5, self.enemy6, self.enemy7, self.enemy8, self.enemy9,self.enemy10, self.enemy11, self.enemy12, self.enemy13, self.enemy14, self.enemy15, self.enemy16,  self.enemy17]
-
+        self.enemy_group = pygame.sprite.Group()
         
         self.playerOnPlatform = False
         self.noMovement = False
@@ -137,13 +141,13 @@ class Engine():
 
         self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages)
         self.enemy11 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
-        self.enemy12 = Enemy(self.startingEnemy + 4500, 150, self.enemyImages[0], self.enemyImages)
-        self.enemy13 = Enemy(self.startingEnemy + 5000, 200, self.enemyImages[0], self.enemyImages)
+        self.enemy12 = Enemy(self.startingEnemy + 4500, 140, self.enemyImages[0], self.enemyImages)
+        self.enemy13 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages)
 
         self.enemy14 = Enemy(self.startingEnemy + 1000, 300, self.enemyImages[0], self.enemyImages)
         self.enemy15 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
-        self.enemy16 = Enemy(self.startingEnemy + 5000, 150, self.enemyImages[0], self.enemyImages)
-        self.enemy17 = Enemy(self.startingEnemy + 5000, 200, self.enemyImages[0], self.enemyImages)
+        self.enemy16 = Enemy(self.startingEnemy + 5000, 120, self.enemyImages[0], self.enemyImages)
+        self.enemy17 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages)
 
         self.enemies = [self.enemy,self.enemy2,self.enemy3, self.enemy4, self.enemy5, self.enemy6, self.enemy7, self.enemy8, self.enemy9,self.enemy10, self.enemy11, self.enemy12, self.enemy13, self.enemy14, self.enemy15, self.enemy16,  self.enemy17]
 
@@ -152,6 +156,11 @@ class Engine():
         self.noMovement = False
         self.playerWin = False
         self.currentPlatform = None
+
+        for enemy in self.enemy_group:
+            self.enemy_group.add(enemy)
+            self.objects.add(enemy)
+            enemy.LoadImages(self.enemyImages)
         
 
 
@@ -182,9 +191,9 @@ class Engine():
         for enemy in self.enemies:
             self.objects.add(enemy)
        
-        enemy_group = pygame.sprite.Group()
-        for enemy in enemy_group:
-            enemy_group.add(enemy)
+        
+        for enemy in self.enemy_group:
+            self.enemy_group.add(enemy)
             self.objects.add(enemy)
             enemy.LoadImages(self.enemyImages)
 
@@ -200,13 +209,13 @@ class Engine():
             current_time = pygame.time.get_ticks()
             delta_time = current_time - last_time
             last_time = current_time
-            print(f"Current Time: {current_time} Delta Time: {delta_time} Last Time: {current_time}")
+            #print(f"Current Time: {current_time} Delta Time: {delta_time} Last Time: {current_time}")
             
             # Calculate the distance that the clouds/bg should move this frame
             cloud_distance = self.cloudSpeed * delta_time / 1000
             bg_distance = self.backgroundSpeed * delta_time / 1000
             bg_distance2 = self.backgroundSpeed * delta_time / 1000
-            print(f"Cloud Speed/Dist: {cloud_distance} BG Speed/Dist: {bg_distance}")
+           # print(f"Cloud Speed/Dist: {cloud_distance} BG Speed/Dist: {bg_distance}")
 
             #events
             for event in pygame.event.get():
@@ -286,43 +295,31 @@ class Engine():
                     self.player.Action(False, Direction.LEFT)
 
         #shooting
-            if keys[pygame.MOUSEBUTTONDOWN] or keys[pygame.K_f]:
+            if not self.player.shooting and (keys[pygame.K_p] or keys[pygame.K_q] ) and len(self.projectilesInAir) < 20:
                 self.player.Action(False,Direction.RIGHT,False,False,True)
 
         #environment
-            #enemies        
-            for enemy in self.enemies:    
-                speed = 2
+    
+
                 
-                if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                    enemy.UpdateEnemyRight(speed)
-                elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                    enemy.UpdateEnemyLeft(speed)  
-                else:
-                    enemy.UpdateEnemy(speed)  
-                    
-                    
-                if pygame.Rect.colliderect(enemy.rect, self.player.rect):
-                    engineOn = False
-                    #dead
-                    gameState = GameState.get_instance()
-                    gameState.state = State.DEATH
            
-                
-            
-
-                
-                
-
-            
-          
-
 
         #set sprites
-
-            
+            #shooting
+            if self.player.shooting:
+                newProjectile = Projectile(self.player.rect.x + 20, self.player.rect.y + 65, self.projectileImage)
+                self.projectilesInAir.append(newProjectile)
+                self.objects.add(newProjectile)
+                if self.player.shootingTicks > 0 and self.player.shootingTicks < 40:
+                    self.player.ActiveSprite(self.playerImages[6])
+                elif self.player.shootingTicks > 40 and self.player.shootingTicks < 80:
+                    self.player.ActiveSprite(self.playerImages[7])
+                elif self.player.shootingTicks > 80 and self.player.shootingTicks < 120:
+                    self.player.ActiveSprite(self.playerImages[8])
+                elif self.player.shootingTicks > 120 and self.player.shootingTicks < 160:
+                    self.player.ActiveSprite(self.playerImages[9])
             #jumping
-            if self.player.jumping and self.lastDirection == Direction.RIGHT:
+            elif self.player.jumping and self.lastDirection == Direction.RIGHT:
                 self.player.ActiveSprite(self.playerImageRightJumping)
             elif self.player.jumping and self.lastDirection == Direction.LEFT:
                 self.player.ActiveSprite(self.playerImageLeftJumping)
@@ -337,11 +334,52 @@ class Engine():
             elif self.player.moving and self.lastDirection == Direction.LEFT:
                 self.player.ActiveSprite(self.playerImageLeftMoving)
                 
-            #shooting
-            elif self.player.shooting:
-                if self.player.shootingTicks > 0 and self.player.shootingTicks < 20:
-                    self.player.ActiveSprite(self.playerImageLeftMoving)
+            
+            if len(self.projectilesInAir) > 0:
+                for projectile in self.projectilesInAir: 
+                    if len(self.enemy_group) == 0:   
+                       # print("PROJECTILE X: " + str(projectile.collideRect.x))
+                        projectile.moving()
 
+                    
+                    if projectile.rect.x > self.screen_width:
+                       # print("PROJECTILE LEFT SCREEN")
+                        self.projectilesInAir.remove(projectile)
+                        self.objects.remove(projectile)
+               
+                            
+                  
+                         
+                    #enemies        
+            for enemy in self.enemies:    
+                if enemy.dying:
+                    enemy.Dying()
+                    
+                elif enemy.dead:
+                    if self.enemies.__contains__(enemy):
+                        self.enemies.remove(enemy)
+                    if self.objects.__contains__(enemy):
+                        self.objects.remove(enemy)
+                else:    
+                    speed = 2                
+                    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                        enemy.UpdateEnemyRight(speed)
+                    elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                        enemy.UpdateEnemyLeft(speed)  
+                    else:
+                        enemy.UpdateEnemy(speed)  
+                                            
+                    if pygame.Rect.colliderect(enemy.rect, self.player.rect):
+                        engineOn = False
+                        #dead
+                        gameState = GameState.get_instance()
+                        gameState.state = State.DEATH
+                    if len(self.projectilesInAir) > 0:
+                        for projectile in self.projectilesInAir: 
+                            if pygame.Rect.colliderect(enemy.rect, projectile.collideRect):
+                                self.projectilesInAir.remove(projectile)
+                                self.objects.remove(projectile)
+                                enemy.Hit()
 
 
             #death
