@@ -28,7 +28,7 @@ class Engine():
         self.startingYPlayer = self.startingY - 64
         self.playerImages = playerImages
         self.platformImages = platformImages
-        self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1])
+        self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages)
 
         self.startPlatform = StartPlatform(self.startingX, self.startingY_StartPlatform, self.platformImages[0])
         self.platformSmall2 = Platform(self.startingX + 1600, self.startingY, self.platformImages[1])
@@ -45,7 +45,7 @@ class Engine():
 
         self.parallaxImages = parallaxImages
 
-        self.cloudSpeed = 400
+        self.cloudSpeed = 350
         self.backgroundSpeed = 300
         self.backgroundSpeed2 = 250
         #background
@@ -70,9 +70,10 @@ class Engine():
 
         #enemies
         self.startingEnemy = self.startingXPlayer + 800
-        self.startingYEnemy = self.startingY - enemyImages[0].get_height() / 2
+        self.startingYEnemy = (self.startingY - enemyImages[0].get_height() / 2) + 10
         
         self.enemyImages = enemyImages
+  
         self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
         self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
         self.enemy3 = Enemy(self.startingEnemy + 1500, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
@@ -84,16 +85,13 @@ class Engine():
         self.enemy9 = Enemy(self.startingEnemy + 5000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
 
         self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages)
-        self.enemy11 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
+        self.enemy11 = Enemy(self.startingEnemy + 2500, 100, self.enemyImages[0], self.enemyImages)
         self.enemy12 = Enemy(self.startingEnemy + 4500, 140, self.enemyImages[0], self.enemyImages)
         self.enemy13 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages)
 
-        self.enemy14 = Enemy(self.startingEnemy + 1000, 300, self.enemyImages[0], self.enemyImages)
-        self.enemy15 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
-        self.enemy16 = Enemy(self.startingEnemy + 5000, 120, self.enemyImages[0], self.enemyImages)
-        self.enemy17 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages)
 
-        self.enemies = [self.enemy,self.enemy2,self.enemy3, self.enemy4, self.enemy5, self.enemy6, self.enemy7, self.enemy8, self.enemy9,self.enemy10, self.enemy11, self.enemy12, self.enemy13, self.enemy14, self.enemy15, self.enemy16,  self.enemy17]
+
+        self.enemies = [self.enemy,self.enemy2,self.enemy3, self.enemy4, self.enemy5, self.enemy6, self.enemy7, self.enemy8, self.enemy9,self.enemy10, self.enemy11, self.enemy12, self.enemy13]
         self.enemy_group = pygame.sprite.Group()
         
         self.playerOnPlatform = False
@@ -106,7 +104,7 @@ class Engine():
         
 
     def reset(self):
-        self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1])
+        self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages)
 
         
         self.startPlatform = StartPlatform(self.startingX, self.startingY_StartPlatform, self.platformImages[0])
@@ -140,16 +138,13 @@ class Engine():
         self.enemy9 = Enemy(self.startingEnemy + 5000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
 
         self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages)
-        self.enemy11 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
+        self.enemy11 = Enemy(self.startingEnemy + 2500, 100, self.enemyImages[0], self.enemyImages)
         self.enemy12 = Enemy(self.startingEnemy + 4500, 140, self.enemyImages[0], self.enemyImages)
         self.enemy13 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages)
 
-        self.enemy14 = Enemy(self.startingEnemy + 1000, 300, self.enemyImages[0], self.enemyImages)
-        self.enemy15 = Enemy(self.startingEnemy + 1500, 100, self.enemyImages[0], self.enemyImages)
-        self.enemy16 = Enemy(self.startingEnemy + 5000, 120, self.enemyImages[0], self.enemyImages)
-        self.enemy17 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages)
 
-        self.enemies = [self.enemy,self.enemy2,self.enemy3, self.enemy4, self.enemy5, self.enemy6, self.enemy7, self.enemy8, self.enemy9,self.enemy10, self.enemy11, self.enemy12, self.enemy13, self.enemy14, self.enemy15, self.enemy16,  self.enemy17]
+
+        self.enemies = [self.enemy,self.enemy2,self.enemy3, self.enemy4, self.enemy5, self.enemy6, self.enemy7, self.enemy8, self.enemy9,self.enemy10, self.enemy11, self.enemy12, self.enemy13]
 
 
         self.playerOnPlatform = False
@@ -242,10 +237,10 @@ class Engine():
             #collision (left/right)
             for platform in self.platforms:            
                 if self.collisionDetect.check_collisionRight(self.player.rect, platform.collideRect):
-                    self.noMovement = True
+                    #self.noMovement = True
                     break
                 if self.collisionDetect.check_collisionLeft(self.player.rect, platform.collideRect):
-                    self.noMovement = True
+                   # self.noMovement = True
                     break
  
             if self.playerOnPlatform:
@@ -295,29 +290,23 @@ class Engine():
                     self.player.Action(False, Direction.LEFT)
 
         #shooting
-            if not self.player.shooting and (keys[pygame.K_p] or keys[pygame.K_q] ) and len(self.projectilesInAir) < 20:
+            if self.player.shooting == False and (keys[pygame.K_p] or keys[pygame.K_q] ) and len(self.projectilesInAir) < 50:
                 self.player.Action(False,Direction.RIGHT,False,False,True)
 
-        #environment
-    
-
-                
-           
-
+        #environment                               
         #set sprites
             #shooting
             if self.player.shooting:
                 newProjectile = Projectile(self.player.rect.x + 20, self.player.rect.y + 65, self.projectileImage)
                 self.projectilesInAir.append(newProjectile)
                 self.objects.add(newProjectile)
-                if self.player.shootingTicks > 0 and self.player.shootingTicks < 40:
+                if self.player.shootingTicks > 0 and self.player.shootingTicks < 80:
                     self.player.ActiveSprite(self.playerImages[6])
-                elif self.player.shootingTicks > 40 and self.player.shootingTicks < 80:
+                elif self.player.shootingTicks > 80 and self.player.shootingTicks < 160:
                     self.player.ActiveSprite(self.playerImages[7])
-                elif self.player.shootingTicks > 80 and self.player.shootingTicks < 120:
+                elif self.player.shootingTicks > 340 and self.player.shootingTicks < 420:
                     self.player.ActiveSprite(self.playerImages[8])
-                elif self.player.shootingTicks > 120 and self.player.shootingTicks < 160:
-                    self.player.ActiveSprite(self.playerImages[9])
+            
             #jumping
             elif self.player.jumping and self.lastDirection == Direction.RIGHT:
                 self.player.ActiveSprite(self.playerImageRightJumping)
@@ -350,7 +339,7 @@ class Engine():
                             
                   
                          
-                    #enemies        
+            #enemies        
             for enemy in self.enemies:    
                 if enemy.dying:
                     enemy.Dying()
@@ -370,10 +359,7 @@ class Engine():
                         enemy.UpdateEnemy(speed)  
                                             
                     if pygame.Rect.colliderect(enemy.rect, self.player.rect):
-                        engineOn = False
-                        #dead
-                        gameState = GameState.get_instance()
-                        gameState.state = State.DEATH
+                        self.player.Hit()
                     if len(self.projectilesInAir) > 0:
                         for projectile in self.projectilesInAir: 
                             if pygame.Rect.colliderect(enemy.rect, projectile.collideRect):
@@ -384,6 +370,15 @@ class Engine():
 
             #death
             if self.player.rect.top > self.screen_height:
+                self.player.InstaDie()
+            
+            if self.player.dying:
+                self.player.Dying()
+
+
+
+            
+            if self.player.dead:
                 engineOn = False
                 #dead
                 gameState = GameState.get_instance()

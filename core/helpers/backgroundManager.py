@@ -31,12 +31,12 @@ class BackgroundManager():
         self.background_1.move(direction, object_distance_speed)
            # Check if the background has gone off the screen and move it to the opposite side of the screen
         if self.background_1.rect.right < 0:
-            self.background_1.rect.left = self.background_3.rect.right
+            self.background_1.rect.left = self.background_3.rect.right - 10
         elif self.background_1.rect.left > self.screen_width:
-            self.background_1.rect.right = self.background_2.rect.left
+            self.background_1.rect.right = self.background_2.rect.left + 10
 
-        self.background_2.rect.left = self.background_1.rect.right
-        self.background_3.rect.right = self.background_1.rect.left
+        self.background_2.rect.left = self.background_1.rect.right  - 10
+        self.background_3.rect.right = self.background_1.rect.left + 10
         
            
 
@@ -47,13 +47,13 @@ class BackgroundManager():
         # Check if the first background has gone off the screen
         if self.background_1.rect.right < 0:
             # Move the first background to the right of the third background
-            self.background_1.rect.left = self.background_3.rect.right
+            self.background_1.rect.left = self.background_3.rect.right  - 10
             # Swap the positions of the backgrounds
             self.background_1, self.background_2, self.background_3 = self.background_2, self.background_3, self.background_1
 
         if self.background_1.rect.left > self.screen_width:
             # Move the first background to the right of the third background
-            self.background_1.rect.right = self.background_2.rect.left
+            self.background_1.rect.right = self.background_2.rect.left + 10
             # Swap the positions of the backgrounds
             self.background_1, self.background_2, self.background_3 = self.background_2, self.background_3, self.background_1
 

@@ -32,8 +32,7 @@ class LevelManager():
         imageCharStillRight = spriteSheet.load_image(0,0,self.spriteWidth, self.spriteHeight)  
         imageCharMoveRight = spriteSheet.load_image(self.spriteWidth,0,self.spriteWidth, self.spriteHeight)
         imageJumpingRight = spriteSheet.load_image(self.spriteWidth * 2 ,0,self.spriteWidth, self.spriteHeight)
-        
-        
+               
         imageCharStillLeft = spriteSheet.load_image(self.spriteWidth * 3,0,self.spriteWidth, self.spriteHeight)       
         imagecharMoveLeft = spriteSheet.load_image(self.spriteWidth * 4,0,self.spriteWidth, self.spriteHeight)
         imageJumpingLeft = spriteSheet.load_image(self.spriteWidth * 5,0,self.spriteWidth, self.spriteHeight)
@@ -43,12 +42,16 @@ class LevelManager():
         imageShootingRight3 = spriteSheet.load_image(self.spriteWidth * 8,0,self.spriteWidth, self.spriteHeight)     
         imageShootingRight4 = spriteSheet.load_image(self.spriteWidth * 9,0,self.spriteWidth, self.spriteHeight)  
 
+        deadRight = spriteSheet.load_image(self.spriteWidth * 10,0,self.spriteWidth, self.spriteHeight)  
+        deadRight2 = spriteSheet.load_image(self.spriteWidth * 11,0,self.spriteWidth, self.spriteHeight) 
+        deadRight3 = spriteSheet.load_image(self.spriteWidth * 12,0,self.spriteWidth, self.spriteHeight) 
+        deadRight4 = spriteSheet.load_image(self.spriteWidth * 13,0,self.spriteWidth, self.spriteHeight) 
+
         playerProjectile = pygame.image.load("assets\sprites\PlayerShot.png").convert_alpha()
 
         enemyLeft = spriteSheet.load_image(0,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
         enemyLeft2 = spriteSheet.load_image(self.enemyWidth,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
         enemyLeft3 = spriteSheet.load_image(self.enemyWidth * 2,self.enemyYRow ,self.enemyWidth, self.enemyHeight) 
-
         enemyDead1 = spriteSheet.load_image(self.enemyWidth * 3,self.enemyYRow,self.enemyWidth, self.enemyHeight)  
         enemyDead2 = spriteSheet.load_image(self.enemyWidth * 4,self.enemyYRow,self.enemyWidth, self.enemyHeight)  
         enemyDead3 = spriteSheet.load_image(self.enemyWidth * 5,self.enemyYRow,self.enemyWidth, self.enemyHeight)  
@@ -72,7 +75,7 @@ class LevelManager():
         para3 = pygame.image.load("assets\sprites\para3.png").convert_alpha()
         
 
-        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile]
+        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4]
         self.platformImages = [platformStart, platformSmall, platformBig, platformEnd]
         self.parallaxImages = [para0, para1, para2, para3] #BACKGROUNDS
         self.enemyImages = [enemyLeft, enemyLeft2, enemyLeft3, enemyDead1, enemyDead2, enemyDead3]

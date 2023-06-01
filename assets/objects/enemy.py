@@ -23,7 +23,7 @@ class Enemy(pygame.sprite.Sprite):
         self.originY = y
 
         self.SPEED = 2
-        self.SPEED_RIGHT = 3 
+        self.SPEED_RIGHT = 3
         self.SPEED_LEFT = 3
         self.GRAVITY = 2
         self.JUMP_SPEED = 4
@@ -63,8 +63,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def UpdateEnemyLeft(self,speed):
         self.movingTicks += 1
-        self.rect.x -= self.SPEED_RIGHT
-        self.rect.x += self.SPEED
+        if self.movingTicks % 20 == 1:
+            self.rect.x -= self.SPEED   
 
         if self.rect.x < 0:
             self.rect.x = self.originX

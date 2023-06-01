@@ -69,8 +69,11 @@ def runPyGame():
 
   currentLevel = Level.ONE
   levelMan = LevelManager(Level.ONE, screen, screen_width, screen_height)
-  deathScreen = Death(screen_width, screen_height)
-  winScreen = Win(screen_width, screen_height)
+  deadImg = pygame.image.load("assets\sprites\dead.png").convert_alpha()
+  deathScreen = Death(screen_width, screen_height, deadImg)
+  winImg = pygame.image.load("assets\sprites\win.png").convert_alpha()
+  winBg = pygame.image.load("assets\sprites\para0.png").convert_alpha()
+  winScreen = Win(screen_width, screen_height,winImg, winBg)
   isAlive = True
   gameState = GameState()
   
