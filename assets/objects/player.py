@@ -34,6 +34,7 @@ class Player(pygame.sprite.Sprite):
         self.dying = False
         self.dead = False
         self.dyingTicks = 0
+        self.splatSet = False
 
     def Hit(self):
         self.dying = True

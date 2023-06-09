@@ -34,7 +34,29 @@ class Enemy(pygame.sprite.Sprite):
         self.dying = False
         self.dead = False
         self.dyingTicks = 0
+        self.splatSet = False
+        self.splatTicks = 0
+        self.playSound = True
         
+    def reset(self):
+
+        self.moving = False
+        self.isSpawned = False
+
+        self.SPEED = 2
+        self.SPEED_RIGHT = 3
+        self.SPEED_LEFT = 3
+        self.GRAVITY = 2
+        self.JUMP_SPEED = 4
+        self.JUMP_LENGTH_IN_TICKS = 60
+        self.FALL_LENGTH_IN_TICKS = 40
+        self.movingTicks = 0
+        self.dying = False
+        self.dead = False
+        self.dyingTicks = 0
+        self.splatSet = False
+        self.splatTicks = 0
+        self.playSound = True
 
     def LoadImages(self, images):
         self.enemyImages = images    
@@ -79,6 +101,9 @@ class Enemy(pygame.sprite.Sprite):
             self.ActiveSprite(self.enemyImages[0])
             
 
+    def SetSplat(self, set):
+        self.splatSet = set
+
 
 
     def UpdateEnemy(self,speed):
@@ -100,6 +125,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def Hit(self):
         self.dying = True
+
+        
 
     def Dying(self):
         self.rect.y += 2  

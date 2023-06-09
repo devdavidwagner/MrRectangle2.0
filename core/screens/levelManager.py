@@ -73,13 +73,20 @@ class LevelManager():
         para1 = pygame.image.load("assets\sprites\para1.png").convert_alpha()
         para2 = pygame.image.load("assets\sprites\para2.png").convert_alpha()
         para3 = pygame.image.load("assets\sprites\para3.png").convert_alpha()
-        
+
+        splat = pygame.image.load("assets\sprites\splat.png").convert_alpha()
+        splat2 = pygame.image.load("assets\sprites\splat2.png").convert_alpha()
+        splat3 = pygame.image.load("assets\sprites\splat3.png").convert_alpha()
+
+
 
         self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4]
         self.platformImages = [platformStart, platformSmall, platformBig, platformEnd]
         self.parallaxImages = [para0, para1, para2, para3] #BACKGROUNDS
+        self.effectImages = [splat,splat2,splat3]
+        self.soundEffects = ["assets\sounds\LaserShot.wav", "assets\sounds\JetPack.wav","assets\sounds\Hit.wav", "assets\sounds\EnemyHit.wav"]
         self.enemyImages = [enemyLeft, enemyLeft2, enemyLeft3, enemyDead1, enemyDead2, enemyDead3]
-        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages)
+        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages, self.effectImages, self.soundEffects)
 
 
     def runLevel(self):

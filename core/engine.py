@@ -6,13 +6,15 @@ from assets.objects.platform import Platform
 from core.stateManager import State, GameState
 from core.helpers.collideHelper import CollisionDetection
 from core.helpers.backgroundManager import BackgroundManager
+from core.helpers.soundManager import SoundManager
 from core.helpers.backgroundLayer import BackgroundLayer
 from assets.objects.endPlatform import EndPlatform
 from assets.objects.startPlatform import StartPlatform
 from assets.objects.projectile import Projectile
+from assets.objects.splat import Splat
 
 class Engine():
-    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list):
+    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, effectImages:list, soundEffects:list):
         self.screen = screen
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -28,6 +30,7 @@ class Engine():
         self.startingYPlayer = self.startingY - 64
         self.playerImages = playerImages
         self.platformImages = platformImages
+        self.effectImages = effectImages
         self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages)
 
         self.startPlatform = StartPlatform(self.startingX, self.startingY_StartPlatform, self.platformImages[0])
@@ -100,13 +103,16 @@ class Engine():
         self.currentPlatform = None
 
         self.collisionDetect = CollisionDetection()
+
+        self.soundManager = SoundManager()
+        self.soundEffects = soundEffects
         
         
 
     def reset(self):
         self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages)
 
-        
+        self.soundManager.stop_all_sound_effects()
         self.startPlatform = StartPlatform(self.startingX, self.startingY_StartPlatform, self.platformImages[0])
         self.platformSmall2 = Platform(self.startingX + 1600, self.startingY, self.platformImages[1])
         self.platformSmall3 = Platform(self.startingX + 2700, self.startingY, self.platformImages[1])
@@ -152,6 +158,7 @@ class Engine():
         self.playerWin = False
         self.currentPlatform = None
 
+
         for enemy in self.enemy_group:
             self.enemy_group.add(enemy)
             self.objects.add(enemy)
@@ -192,14 +199,23 @@ class Engine():
             self.objects.add(enemy)
             enemy.LoadImages(self.enemyImages)
 
-
+        #sound
+        self.soundManager.load_sound_effect("Laser", self.soundEffects[0])
+        self.soundManager.load_sound_effect("Jet", self.soundEffects[1])
+        self.soundManager.load_sound_effect("Hit", self.soundEffects[2])
+        self.soundManager.load_sound_effect("EnemyHit", self.soundEffects[3])
+        self.soundManager.load_sound_effect("Theme", "assets\sounds\Theme.mp3")
+        
         #player
         self.objects.add(self.player)
+        self.splats = []
         last_time = 0
         self.movingTicks = 0
+
+        self.soundManager.playTheme("Theme", 0)
         while engineOn:
             self.ticks += 1
-
+            
             # Calculate the time that has passed since the last frame
             current_time = pygame.time.get_ticks()
             delta_time = current_time - last_time
@@ -220,6 +236,10 @@ class Engine():
                  if event.key == pygame.K_SPACE and not self.player.jumping and not self.player.falling:
                      #JUMPING
                     self.player.jumping = True
+                    self.soundManager.play_sound_effect("Jet", 3)
+
+            if not self.player.jumping:
+                self.soundManager.stop_sound_effect("Jet")
            
 
             self.playerOnPlatform = False       
@@ -251,6 +271,9 @@ class Engine():
             keys = pygame.key.get_pressed()
 
         #KEYS/ACTIONS     
+
+            if self.player.rect.y <= 50:
+                self.player.rect.y = 50
             #JUMPING 
             
             if self.player.jumping == True and self.lastDirection == Direction.RIGHT:
@@ -292,6 +315,7 @@ class Engine():
         #shooting
             if self.player.shooting == False and (keys[pygame.K_p] or keys[pygame.K_q] ) and len(self.projectilesInAir) < 50:
                 self.player.Action(False,Direction.RIGHT,False,False,True)
+                self.soundManager.play_sound_effect("Laser", 1)
 
         #environment                               
         #set sprites
@@ -337,12 +361,26 @@ class Engine():
                         self.objects.remove(projectile)
                
                             
-                  
+            
                          
             #enemies        
+                
             for enemy in self.enemies:    
+                if not self.objects.__contains__(enemy):
+                    enemy.reset()
+                    self.objects.add(enemy)
+                if not enemy.playSound:
+                    enemy.playSound = True
+                    self.soundManager.play_sound_effect("EnemyHit",2)   
                 if enemy.dying:
                     enemy.Dying()
+                    if not enemy.splatSet:
+                        splat = Splat(enemy.rect.x, enemy.rect.y, self.effectImages[0])
+                        self.objects.add(splat)
+                        self.splats.append(splat)    
+                        enemy.SetSplat(True)
+             
+                      
                     
                 elif enemy.dead:
                     if self.enemies.__contains__(enemy):
@@ -360,12 +398,19 @@ class Engine():
                                             
                     if pygame.Rect.colliderect(enemy.rect, self.player.rect):
                         self.player.Hit()
+                        self.soundManager.play_sound_effect("Hit", 4)
+
                     if len(self.projectilesInAir) > 0:
                         for projectile in self.projectilesInAir: 
                             if pygame.Rect.colliderect(enemy.rect, projectile.collideRect):
                                 self.projectilesInAir.remove(projectile)
                                 self.objects.remove(projectile)
                                 enemy.Hit()
+                                enemy.playSound = False
+          
+                              
+                                
+                            
 
 
             #death
@@ -374,11 +419,29 @@ class Engine():
             
             if self.player.dying:
                 self.player.Dying()
+                if not self.player.splatSet:
+                    splat = Splat(self.player.rect.x, self.player.rect.y, self.effectImages[0])
+                    self.objects.add(splat)
+                    self.splats.append(splat) 
+                    self.player.splatSet = True
 
 
+            for splat in self.splats:
+                splat.move(splat.rect.x, splat.rect.y)
+                splat.splatTicks += 1
+                if splat.splatTicks < 50:
+                    splat.ActiveSprite(self.effectImages[0])
+                if splat.splatTicks > 50 and splat.splatTicks < 100:
+                    splat.ActiveSprite(self.effectImages[1])
+                if splat.splatTicks > 100 and splat.splatTicks < 200:
+                    splat.ActiveSprite(self.effectImages[2])
+                if splat.splatTicks > 200:                     
+                    self.objects.remove(splat)
+                    self.splats.remove(splat)
 
             
             if self.player.dead:
+                self.soundManager.stop_all_sound_effects()
                 engineOn = False
                 #dead
                 gameState = GameState.get_instance()
@@ -393,6 +456,7 @@ class Engine():
                 #win
                 gameState = GameState.get_instance()
                 gameState.state = State.WIN
+        self.soundManager.stop_all_sound_effects()
 
             
             
@@ -402,7 +466,6 @@ class Engine():
         self.screen.fill("black")
 
         objects.draw(self.screen)
-        
 
         # Update the display
         pygame.display.update()
