@@ -32,6 +32,7 @@ class Engine():
         self.platformImages = platformImages
         self.effectImages = effectImages
         self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages)
+        
 
         self.startPlatform = StartPlatform(self.startingX, self.startingY_StartPlatform, self.platformImages[0])
         self.platformSmall2 = Platform(self.startingX + 1600, self.startingY, self.platformImages[1])
@@ -77,20 +78,20 @@ class Engine():
         
         self.enemyImages = enemyImages
   
-        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy3 = Enemy(self.startingEnemy + 1500, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy4 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy5 = Enemy(self.startingEnemy + 2200, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy6 = Enemy(self.startingEnemy + 3000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy7 = Enemy(self.startingEnemy + 4000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy8 = Enemy(self.startingEnemy + 4500, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy9 = Enemy(self.startingEnemy + 5000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy3 = Enemy(self.startingEnemy + 1500, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy4 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy5 = Enemy(self.startingEnemy + 2200, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy6 = Enemy(self.startingEnemy + 3000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy7 = Enemy(self.startingEnemy + 4000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy8 = Enemy(self.startingEnemy + 4500, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy9 = Enemy(self.startingEnemy + 5000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
 
-        self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages)
-        self.enemy11 = Enemy(self.startingEnemy + 2500, 100, self.enemyImages[0], self.enemyImages)
-        self.enemy12 = Enemy(self.startingEnemy + 4500, 140, self.enemyImages[0], self.enemyImages)
-        self.enemy13 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages)
+        self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy11 = Enemy(self.startingEnemy + 2500, 100, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy12 = Enemy(self.startingEnemy + 4500, 140, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy13 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages, 100)
 
 
 
@@ -133,20 +134,20 @@ class Engine():
         self.backgroundManagerMtn = BackgroundManager(self.player, self.screen,  self.screen_height, self.screen_width, self.parallaxImages[3], 3)
         
         #enemies
-        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy3 = Enemy(self.startingEnemy + 1500, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy4 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy5 = Enemy(self.startingEnemy + 2200, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy6 = Enemy(self.startingEnemy + 3000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy7 = Enemy(self.startingEnemy + 4000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy8 = Enemy(self.startingEnemy + 4500, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
-        self.enemy9 = Enemy(self.startingEnemy + 5000, self.startingYEnemy, self.enemyImages[0], self.enemyImages)
+        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy3 = Enemy(self.startingEnemy + 1500, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy4 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy5 = Enemy(self.startingEnemy + 2200, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy6 = Enemy(self.startingEnemy + 3000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy7 = Enemy(self.startingEnemy + 4000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy8 = Enemy(self.startingEnemy + 4500, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy9 = Enemy(self.startingEnemy + 5000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
 
-        self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages)
-        self.enemy11 = Enemy(self.startingEnemy + 2500, 100, self.enemyImages[0], self.enemyImages)
-        self.enemy12 = Enemy(self.startingEnemy + 4500, 140, self.enemyImages[0], self.enemyImages)
-        self.enemy13 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages)
+        self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy11 = Enemy(self.startingEnemy + 2500, 100, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy12 = Enemy(self.startingEnemy + 4500, 140, self.enemyImages[0], self.enemyImages, 100)
+        self.enemy13 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages, 100)
 
 
 
@@ -365,7 +366,10 @@ class Engine():
                          
             #enemies        
                 
-            for enemy in self.enemies:    
+            for enemy in self.enemies:   
+
+
+
                 if not self.objects.__contains__(enemy):
                     enemy.reset()
                     self.objects.add(enemy)
@@ -406,11 +410,10 @@ class Engine():
                                 self.projectilesInAir.remove(projectile)
                                 self.objects.remove(projectile)
                                 enemy.Hit()
+                                self.player.AddToScore(enemy.score)
                                 enemy.playSound = False
           
-                              
-                                
-                            
+                                               
 
 
             #death
@@ -446,6 +449,7 @@ class Engine():
                 #dead
                 gameState = GameState.get_instance()
                 gameState.state = State.DEATH
+                gameState.set_score(self.player.score)
 
             #draw
             
@@ -467,6 +471,12 @@ class Engine():
 
         objects.draw(self.screen)
 
+        self.player.draw(self.screen)
+
+        for enemy in self.enemies:
+            if enemy.dying:
+                enemy.display_enemy_score(self.screen, enemy.score)
+        
         # Update the display
         pygame.display.update()
 

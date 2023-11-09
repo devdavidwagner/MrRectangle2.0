@@ -6,7 +6,7 @@ class Win:
     def __init__(self, screen_width, screen_height, winImg, winBg):
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font(None, 55)
         self.live_text = self.font.render("MR. RECTANGLE LIVES!", True, (124,252,0))
         self.cont_text = self.font.render("PRESS ANY KEY TO CONTINUE TO NEXT LEVEL", True, (255, 255, 255))
         self.live_text_rect = self.live_text.get_rect(center=(screen_width/2, (screen_height/2) - 150))
@@ -19,6 +19,10 @@ class Win:
     
     def display(self, screen):
         screen.fill((0, 0, 0))
+
+        game_state = GameState.get_instance()
+        game_state.get_score()
+  
         screen.blit(self.winBg, (0,0))
         screen.blit(self.cont_text, self.cont_text_rect)
         screen.blit(self.winImg, ((self.screen_width/2) - 250, (self.screen_height / 2)  - 200))
@@ -26,6 +30,15 @@ class Win:
         if not self.soundPlayed:
             self.soundManager.play_sound_effect("Win", 5)
             self.soundPlayed = True
+
+        scoreText = self.font.render("SCORE: " + str(game_state.get_score()), True, (0, 255, 0))
+        score_text_rect = scoreText.get_rect()
+        score_text_rect.x = (self.screen_width / 2) - 100
+        score_text_rect.y = (self.screen_height / 2 ) - 200
+        
+        screen.blit(scoreText, score_text_rect)
+
+
         pygame.display.update()
 
     

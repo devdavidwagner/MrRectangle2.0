@@ -8,20 +8,17 @@ class Direction(Enum):
     RIGHT = 2
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y, image, allImages):
+    def __init__(self, x, y, image, allImages, score):
         super().__init__()
         self.image = image
         self.rect = self.image.get_bounding_rect()
         self.rect.size
         self.rect.center = (x, y)
-
-
-
+        self.score = score
         self.moving = False
         self.isSpawned = False
         self.originX = x
         self.originY = y
-
         self.SPEED = 2
         self.SPEED_RIGHT = 3
         self.SPEED_LEFT = 3
@@ -37,6 +34,14 @@ class Enemy(pygame.sprite.Sprite):
         self.splatSet = False
         self.splatTicks = 0
         self.playSound = True
+        self.font = pygame.font.Font(None, 50)
+        self.scoreTicks = 0
+
+        self.text_rect = self.rect
+        self.text_rect.center = (x, y)
+
+        self.initX = 0
+        self.initY = 0
         
     def reset(self):
 
@@ -57,6 +62,9 @@ class Enemy(pygame.sprite.Sprite):
         self.splatSet = False
         self.splatTicks = 0
         self.playSound = True
+        self.scoreTicks = 0
+
+
 
     def LoadImages(self, images):
         self.enemyImages = images    
@@ -105,6 +113,13 @@ class Enemy(pygame.sprite.Sprite):
         self.splatSet = set
 
 
+    def display_enemy_score(self,screen, score):
+        text = self.font.render(f"+{score}", True, "GREEN")
+        if self.scoreTicks % 4 == 2:
+            text = self.font.render(f"+{score}!", True, "RED")
+        self.scoreTicks += 1
+        screen.blit(text, self.text_rect)
+        
 
     def UpdateEnemy(self,speed):
         self.movingTicks += 1

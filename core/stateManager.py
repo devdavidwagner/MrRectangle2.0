@@ -15,6 +15,7 @@ class GameState:
         else:
             GameState.__instance = self
             self.state = State.MENU
+            self.score = 0
 
     @staticmethod
     def get_instance():
@@ -22,3 +23,8 @@ class GameState:
             GameState()
         return GameState.__instance
 
+    def set_score(self, new_score):
+        self.score = new_score
+
+    def get_score(self):
+        return self.score

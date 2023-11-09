@@ -1,0 +1,37 @@
+# Ignore compiled Python files
+__pycache__
+
+
+# Ignore logs and temporary files
+*.log
+*.log.*
+*.tmp
+
+# Ignore system and IDE-specific files
+.DS_Store
+Thumbs.db
+.idea/
+
+# Ignore virtual environment directories
+venv/
+env/
+__env__/
+.venv
+
+# Ignore dependencies and build artifacts
+node_modules/
+dist/
+build/
+
+# Ignore configuration files with sensitive information
+config.ini
+secrets.ini
+
+# Ignore database files
+*.db
+*.sqlite
+
+# Ignore user-specific settings
+settings.ini
+settings.yaml
+__pycache__/main.cpython-311.pyc

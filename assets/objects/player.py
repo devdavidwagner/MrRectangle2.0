@@ -35,6 +35,14 @@ class Player(pygame.sprite.Sprite):
         self.dead = False
         self.dyingTicks = 0
         self.splatSet = False
+        self.score = 0
+        self.prevScore = 0
+
+        pygame.font.init()
+        self.font = pygame.font.Font(None, 36)
+    
+    def AddToScore(self, add):
+        self.score += add 
 
     def Hit(self):
         self.dying = True
@@ -62,6 +70,38 @@ class Player(pygame.sprite.Sprite):
             self.dyingTicks = 0
             self.dead = True
             self.dying = False
+
+    def draw(self, screen):
+        # Create a text surface with the player's score
+        score_text = self.font.render(f"Score: {self.score}", True, (255, 255, 255))  # You can change the color (here, white) as needed
+
+        
+
+        if self.prevScore != self.score:
+            
+            add_score_text = self.font.render(f"Score: {self.score}", True, (255, 255, 255)) 
+            
+
+        # Get the rectangle that represents the text surface
+        score_rect = score_text.get_rect()
+        score_rect.width = score_rect.width  * 2
+        score_rect.height = score_rect.height * 1.5
+
+
+        # Set the position of the text (top-left corner)
+        score_rect.topleft = (10, 10)  # Adjust the position as needed
+
+        
+        # Create a translucent box behind the score
+        score_box = pygame.Surface((score_rect.width, score_rect.height))
+        score_box.set_alpha(200)  # Set the alpha value to control the transparency (0 is fully transparent, 255 is fully opaque)
+        score_box.fill((128, 128, 128))  # Set the color of the box (gray in this case)
+
+        screen.blit(score_box, score_rect.topleft)
+        # Blit the text surface onto the screen
+        screen.blit(score_text, (score_rect.x + score_rect.width /4, score_rect.y ))
+        self.prevScore = self.score
+        
         
         
 
