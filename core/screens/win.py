@@ -6,9 +6,10 @@ class Win:
     def __init__(self, screen_width, screen_height, winImg, winBg):
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.fontReg = pygame.font.Font(None, 26)
         self.font = pygame.font.Font(None, 55)
-        self.live_text = self.font.render("MR. RECTANGLE LIVES!", True, (124,252,0))
-        self.cont_text = self.font.render("PRESS ANY KEY TO CONTINUE TO NEXT LEVEL", True, (255, 255, 255))
+        self.live_text = self.fontReg.render("MR. RECTANGLE LIVES!", True, (124,252,0))
+        self.cont_text = self.fontReg.render("PRESS ANY KEY TO CONTINUE TO NEXT LEVEL", True, (255, 255, 255))
         self.live_text_rect = self.live_text.get_rect(center=(screen_width/2, (screen_height/2) - 150))
         self.cont_text_rect = self.cont_text.get_rect(center=(screen_width/2, (screen_height/2) + 50))
         self.winImg = winImg

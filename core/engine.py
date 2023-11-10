@@ -12,9 +12,10 @@ from assets.objects.endPlatform import EndPlatform
 from assets.objects.startPlatform import StartPlatform
 from assets.objects.projectile import Projectile
 from assets.objects.splat import Splat
+from assets.objects.fruit import Fruit
 
 class Engine():
-    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, effectImages:list, soundEffects:list):
+    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list):
         self.screen = screen
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -107,6 +108,19 @@ class Engine():
 
         self.soundManager = SoundManager()
         self.soundEffects = soundEffects
+        self.fruitImages = fruitImages
+        self.startFruitX = 800
+
+
+      
+        self.fruit1 = Fruit(self.startFruitX, 100, self.fruitImages[0], self.fruitImages)
+        self.fruit2 = Fruit(self.startFruitX* 2, 200, self.fruitImages[0], self.fruitImages) 
+        self.fruit3 = Fruit(self.startFruitX * 3, 300, self.fruitImages[0], self.fruitImages)
+        self.fruit4 = Fruit(self.startFruitX* 4, 100, self.fruitImages[0], self.fruitImages) 
+        self.fruit5 = Fruit(self.startFruitX * 5, 300, self.fruitImages[0], self.fruitImages)
+        self.fruit6 = Fruit(self.startFruitX* 6, 300, self.fruitImages[0], self.fruitImages) 
+        self.fruit7 = Fruit(self.startFruitX * 7, 250, self.fruitImages[0], self.fruitImages)
+        self.fruits = [self.fruit1, self.fruit2, self.fruit3, self.fruit4, self.fruit5, self.fruit6, self.fruit7]
         
         
 
@@ -159,6 +173,15 @@ class Engine():
         self.playerWin = False
         self.currentPlatform = None
 
+        self.fruit1 = Fruit(self.startFruitX, 100, self.fruitImages[0], self.fruitImages)
+        self.fruit2 = Fruit(self.startFruitX* 2, 200, self.fruitImages[0], self.fruitImages) 
+        self.fruit3 = Fruit(self.startFruitX * 3, 300, self.fruitImages[0], self.fruitImages)
+        self.fruit4 = Fruit(self.startFruitX* 4, 100, self.fruitImages[0], self.fruitImages) 
+        self.fruit5 = Fruit(self.startFruitX * 5, 300, self.fruitImages[0], self.fruitImages)
+        self.fruit6 = Fruit(self.startFruitX* 6, 300, self.fruitImages[0], self.fruitImages) 
+        self.fruit7 = Fruit(self.startFruitX * 7, 250, self.fruitImages[0], self.fruitImages)
+        self.fruits = [self.fruit1, self.fruit2, self.fruit3, self.fruit4, self.fruit5, self.fruit6, self.fruit7]
+
 
         for enemy in self.enemy_group:
             self.enemy_group.add(enemy)
@@ -200,6 +223,10 @@ class Engine():
             self.objects.add(enemy)
             enemy.LoadImages(self.enemyImages)
 
+        #fruit
+        for fruit in self.fruits:
+            self.objects.add(fruit)
+
         #sound
         self.soundManager.load_sound_effect("Laser", self.soundEffects[0])
         self.soundManager.load_sound_effect("Jet", self.soundEffects[1])
@@ -227,7 +254,7 @@ class Engine():
             cloud_distance = self.cloudSpeed * delta_time / 1000
             bg_distance = self.backgroundSpeed * delta_time / 1000
             bg_distance2 = self.backgroundSpeed * delta_time / 1000
-           # print(f"Cloud Speed/Dist: {cloud_distance} BG Speed/Dist: {bg_distance}")
+
 
             #events
             for event in pygame.event.get():
@@ -255,6 +282,7 @@ class Engine():
                     break
             
             self.noMovement = False
+
             #collision (left/right)
             for platform in self.platforms:            
                 if self.collisionDetect.check_collisionRight(self.player.rect, platform.collideRect):
@@ -287,7 +315,9 @@ class Engine():
             stuck = False
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 #enemies
-           
+                for fruit in self.fruits:
+                    fruit.update(Direction.RIGHT, self.noMovement)
+
                 self.player.Action(True, Direction.RIGHT)
                 self.lastDirection = Direction.RIGHT
                 self.backgroundManagerHill.update(Direction.RIGHT, self.noMovement, bg_distance)                   
@@ -295,9 +325,14 @@ class Engine():
                 self.backgroundManagerCloud.update(Direction.RIGHT, self.noMovement, cloud_distance) 
                 for platform in self.platforms:                           
                     platform.update(self.playerOnPlatform, self.player.rect, Direction.RIGHT, self.noMovement)              
+           
+           
             #MOVING LEFT
             elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
                  #enemies           
+                for fruit in self.fruits:
+                    fruit.update(Direction.LEFT, self.noMovement)
+            
                 self.player.Action(True, Direction.LEFT)
                 self.lastDirection = Direction.LEFT
                 self.backgroundManagerHill.update(Direction.LEFT, self.noMovement, bg_distance)    
@@ -361,15 +396,24 @@ class Engine():
                         self.projectilesInAir.remove(projectile)
                         self.objects.remove(projectile)
                
-                            
             
-                         
+            #fruits
+            for fruit in self.fruits:
+                if not fruit.eaten:
+                    if self.collisionDetect.check_collisionRight(self.player.rect, fruit.collideRect):
+                        if self.collisionDetect.check_collisionBottom(self.player.rect, fruit.collideRect):
+                            fruit.collided = True
+                            print("Player collided fruit")
+                else:
+                    if not fruit.addedScore:
+                        self.player.AddToScore(fruit.score)
+                        fruit.addedScore = True
+                        self.objects.remove(fruit)
+                
+
             #enemies        
                 
             for enemy in self.enemies:   
-
-
-
                 if not self.objects.__contains__(enemy):
                     enemy.reset()
                     self.objects.add(enemy)
@@ -476,6 +520,10 @@ class Engine():
         for enemy in self.enemies:
             if enemy.dying:
                 enemy.display_enemy_score(self.screen, enemy.score)
+
+        for fruit in self.fruits:
+            if fruit.collided:
+                fruit.display_fruity_score(self.screen)
         
         # Update the display
         pygame.display.update()

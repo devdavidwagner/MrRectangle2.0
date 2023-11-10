@@ -38,7 +38,13 @@ class Player(pygame.sprite.Sprite):
         self.score = 0
         self.prevScore = 0
 
+        self.scoreAddedTo = False
+        self.showAddTicks = 0
+        self.diff = 0
+       
+
         pygame.font.init()
+        self.fontAdded = pygame.font.Font(None, 55)
         self.font = pygame.font.Font(None, 36)
     
     def AddToScore(self, add):
@@ -75,11 +81,7 @@ class Player(pygame.sprite.Sprite):
         # Create a text surface with the player's score
         score_text = self.font.render(f"Score: {self.score}", True, (255, 255, 255))  # You can change the color (here, white) as needed
 
-        
-
-        if self.prevScore != self.score:
-            
-            add_score_text = self.font.render(f"Score: {self.score}", True, (255, 255, 255)) 
+       
             
 
         # Get the rectangle that represents the text surface
@@ -100,6 +102,31 @@ class Player(pygame.sprite.Sprite):
         screen.blit(score_box, score_rect.topleft)
         # Blit the text surface onto the screen
         screen.blit(score_text, (score_rect.x + score_rect.width /4, score_rect.y ))
+
+         
+
+        if self.prevScore != self.score and not self.scoreAddedTo:
+            self.diff = self.score - self.prevScore
+            self.diff = abs(self.diff)
+            self.scoreAddedTo = True
+
+        if self.scoreAddedTo:
+            self.showAddTicks += 1
+            add_score_text = self.fontAdded.render(f"+ {self.diff} !", True,  (0, 255, 0)) 
+                # Get the rectangle that represents the text surface
+            add_score_rect = add_score_text.get_rect()
+            add_score_rect.width = add_score_rect.width  * 2
+            add_score_rect.height = add_score_rect.height * 1.5
+            add_score_rect.center = (100, 60)
+
+            if self.showAddTicks < 100:
+                print("add to score showing")
+                screen.blit(add_score_text, (add_score_rect.x + add_score_rect.width /4, add_score_rect.y ))
+            else:
+                self.showAddTicks = 0
+                self.scoreAddedTo = False
+          
+
         self.prevScore = self.score
         
         

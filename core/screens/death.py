@@ -6,7 +6,8 @@ class Death:
     def __init__(self, screen_width, screen_height, deadPlayerImg):
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.font = pygame.font.Font(None, 55)     
+        self.font = pygame.font.Font(None, 55) 
+        self.scoreFont =  pygame.font.Font(None, 75)  
         self.death_text = self.font.render("RIP MR. RECTANGLE", True, (255, 0, 0))
         self.restart_text = self.font.render("PRESS ANY KEY TO RESTART", True, (255, 255, 255))
        
@@ -21,9 +22,9 @@ class Death:
     def display(self, screen):
         game_state = GameState.get_instance()
         game_state.get_score()
-        scoreText = self.font.render("SCORE: " + str(game_state.get_score()), True, (255, 0, 0))
+        scoreText = self.scoreFont.render("SCORE: " + str(game_state.get_score()), True, (0, 255, 0))
         score_text_rect = scoreText.get_rect()
-        score_text_rect.x = (self.screen_width / 2) - 100
+        score_text_rect.x = (self.screen_width / 2) - 150
         score_text_rect.y = (self.screen_height / 2 ) - 200
         
         screen.fill((0, 0, 0))

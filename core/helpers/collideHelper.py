@@ -24,5 +24,21 @@ class CollisionDetection:
             return True
         else:
             return False 
+    
+    @staticmethod
+    def check_collisionBottom(rect1: pygame.rect.Rect, rect2: pygame.rect.Rect):
+        if rect1.top < rect2.bottom + (rect1.height * 2) and rect1.left > rect2.left and rect1.right < rect2.right:
+            return True
+        else:
+            return False
         
+    @staticmethod
+    def check_collision_all(rect1: pygame.rect.Rect, rect2: pygame.rect.Rect):
+        if (CollisionDetection.check_collisionTop(rect1, rect2) or 
+            CollisionDetection.check_collisionLeft(rect1, rect2) or
+            CollisionDetection.check_collisionRight(rect1, rect2) or
+            CollisionDetection.check_collisionBottom(rect1, rect2)):
+            return True
+        else:
+            return False
     
