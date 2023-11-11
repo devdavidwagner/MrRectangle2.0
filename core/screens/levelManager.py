@@ -90,6 +90,8 @@ class LevelManager():
         self.effectImages = [splat,splat2,splat3]
         self.soundEffects = ["assets\sounds\LaserShot.wav", "assets\sounds\JetPack.wav","assets\sounds\Hit.wav", "assets\sounds\EnemyHit.wav"]
         self.enemyImages = [enemyLeft, enemyLeft2, enemyLeft3, enemyDead1, enemyDead2, enemyDead3]
+        self.game_state = GameState.get_instance()
+        self.currentLevel = self.game_state.return_level()
         self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages,  self.fruitImages, self.effectImages, self.soundEffects)
 
 

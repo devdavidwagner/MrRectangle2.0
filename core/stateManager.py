@@ -16,6 +16,7 @@ class GameState:
             GameState.__instance = self
             self.state = State.MENU
             self.score = 0
+            self.level = 1
 
     @staticmethod
     def get_instance():
@@ -28,3 +29,9 @@ class GameState:
 
     def get_score(self):
         return self.score
+
+    def next_level(self):
+        self.level += 1 
+
+    def return_level(self):
+        return self.level

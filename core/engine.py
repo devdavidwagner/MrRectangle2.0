@@ -8,6 +8,7 @@ from core.helpers.collideHelper import CollisionDetection
 from core.helpers.backgroundManager import BackgroundManager
 from core.helpers.soundManager import SoundManager
 from core.helpers.backgroundLayer import BackgroundLayer
+from core.helpers.levelBuilder import LevelBuilder
 from assets.objects.endPlatform import EndPlatform
 from assets.objects.startPlatform import StartPlatform
 from assets.objects.projectile import Projectile
@@ -34,95 +35,106 @@ class Engine():
         self.effectImages = effectImages
         self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages)
         
+        self.level_builder = LevelBuilder(currentLevel, screen_width, screen_height, 40)
+        self.levelData = self.level_builder.load_level()
 
-        self.startPlatform = StartPlatform(self.startingX, self.startingY_StartPlatform, self.platformImages[0])
-        self.platformSmall2 = Platform(self.startingX + 1600, self.startingY, self.platformImages[1])
-        self.platformSmall3 = Platform(self.startingX + 2700, self.startingY, self.platformImages[1])
-        self.platformSmall4 = Platform(self.startingX + 3400, self.startingY, self.platformImages[1])
-        self.platformSmall5 = Platform(self.startingX + 4100, self.startingY, self.platformImages[1])
-        self.platformSmall6 = Platform(self.startingX + 4800, self.startingY, self.platformImages[1])
-        self.endPlatform = EndPlatform(self.endingX, self.startingY_StartPlatform, self.platformImages[3])
 
-        self.platforms = [self.startPlatform,  self.platformSmall2, self.platformSmall3, 
-                        self.platformSmall4, self.platformSmall5, self.platformSmall6, self.endPlatform]
+        # self.startPlatform = StartPlatform(self.startingX, self.startingY_StartPlatform, self.platformImages[0])
+        # self.platformSmall2 = Platform(self.startingX + 1600, self.startingY, self.platformImages[1])
+        # self.platformSmall3 = Platform(self.startingX + 2700, self.startingY, self.platformImages[1])
+        # self.platformSmall4 = Platform(self.startingX + 3400, self.startingY, self.platformImages[1])
+        # self.platformSmall5 = Platform(self.startingX + 4100, self.startingY, self.platformImages[1])
+        # self.platformSmall6 = Platform(self.startingX + 4800, self.startingY, self.platformImages[1])
+        # self.endPlatform = EndPlatform(self.endingX, self.startingY_StartPlatform, self.platformImages[3])
+
+        # self.platforms = [self.startPlatform,  self.platformSmall2, self.platformSmall3, 
+        #                 self.platformSmall4, self.platformSmall5, self.platformSmall6, self.endPlatform]
         
-        self.noMovement = False
+        # self.noMovement = False
 
-        self.parallaxImages = parallaxImages
+        # self.parallaxImages = parallaxImages
 
-        self.cloudSpeed = 350
-        self.backgroundSpeed = 300
-        self.backgroundSpeed2 = 250
-        #background
-        self.background_0 = BackgroundLayer(0,0,self.screen, self.screen_width, self.screen_height, self.screen_width, self.parallaxImages[0], 0)
+        # self.cloudSpeed = 350
+        # self.backgroundSpeed = 300
+        # self.backgroundSpeed2 = 250
+        # #background
+        # self.background_0 = BackgroundLayer(0,0,self.screen, self.screen_width, self.screen_height, self.screen_width, self.parallaxImages[0], 0)
 
-        #parallax foregound
-        self.backgroundManagerCloud = BackgroundManager(self.player, self.screen, 200, self.screen_width, self.parallaxImages[1], self.cloudSpeed)
-        self.backgroundManagerHill = BackgroundManager(self.player, self.screen,  self.screen_height, self.screen_width, self.parallaxImages[2], 2)
-        self.backgroundManagerMtn = BackgroundManager(self.player, self.screen,  self.screen_height, self.screen_width, self.parallaxImages[3], 3)
+        # #parallax foregound
+        # self.backgroundManagerCloud = BackgroundManager(self.player, self.screen, 200, self.screen_width, self.parallaxImages[1], self.cloudSpeed)
+        # self.backgroundManagerHill = BackgroundManager(self.player, self.screen,  self.screen_height, self.screen_width, self.parallaxImages[2], 2)
+        # self.backgroundManagerMtn = BackgroundManager(self.player, self.screen,  self.screen_height, self.screen_width, self.parallaxImages[3], 3)
         
 
-        self.projectileImage = self.playerImages[10]
-        self.projectilesInAir = []
+        # self.projectileImage = self.playerImages[10]
+        # self.projectilesInAir = []
 
-        self.playerImageLeftStill = self.playerImages[0]
-        self.playerImageRightStill = self.playerImages[1]
-        self.playerImageLeftMoving = self.playerImages[2] 
-        self.playerImageRightMoving = self.playerImages[3]
-        self.playerImageLeftJumping = self.playerImages[4] 
-        self.playerImageRightJumping = self.playerImages[5]
-        self.lastDirection = Direction.RIGHT
+        # self.playerImageLeftStill = self.playerImages[0]
+        # self.playerImageRightStill = self.playerImages[1]
+        # self.playerImageLeftMoving = self.playerImages[2] 
+        # self.playerImageRightMoving = self.playerImages[3]
+        # self.playerImageLeftJumping = self.playerImages[4] 
+        # self.playerImageRightJumping = self.playerImages[5]
+        # self.lastDirection = Direction.RIGHT
 
-        #enemies
-        self.startingEnemy = self.startingXPlayer + 800
-        self.startingYEnemy = (self.startingY - enemyImages[0].get_height() / 2) + 10
+        # #enemies
+        # self.startingEnemy = self.startingXPlayer + 800
+        # self.startingYEnemy = (self.startingY - enemyImages[0].get_height() / 2) + 10
         
-        self.enemyImages = enemyImages
+        # self.enemyImages = enemyImages
   
-        self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy3 = Enemy(self.startingEnemy + 1500, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy4 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy5 = Enemy(self.startingEnemy + 2200, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy6 = Enemy(self.startingEnemy + 3000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy7 = Enemy(self.startingEnemy + 4000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy8 = Enemy(self.startingEnemy + 4500, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy9 = Enemy(self.startingEnemy + 5000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy = Enemy(self.startingEnemy, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy2 = Enemy(self.startingEnemy + 1000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy3 = Enemy(self.startingEnemy + 1500, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy4 = Enemy(self.startingEnemy + 2000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy5 = Enemy(self.startingEnemy + 2200, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy6 = Enemy(self.startingEnemy + 3000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy7 = Enemy(self.startingEnemy + 4000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy8 = Enemy(self.startingEnemy + 4500, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy9 = Enemy(self.startingEnemy + 5000, self.startingYEnemy, self.enemyImages[0], self.enemyImages, 100)
 
-        self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy11 = Enemy(self.startingEnemy + 2500, 100, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy12 = Enemy(self.startingEnemy + 4500, 140, self.enemyImages[0], self.enemyImages, 100)
-        self.enemy13 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy10 = Enemy(self.startingEnemy + 1500, 300, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy11 = Enemy(self.startingEnemy + 2500, 100, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy12 = Enemy(self.startingEnemy + 4500, 140, self.enemyImages[0], self.enemyImages, 100)
+        # self.enemy13 = Enemy(self.startingEnemy + 5000, 180, self.enemyImages[0], self.enemyImages, 100)
 
 
 
-        self.enemies = [self.enemy,self.enemy2,self.enemy3, self.enemy4, self.enemy5, self.enemy6, self.enemy7, self.enemy8, self.enemy9,self.enemy10, self.enemy11, self.enemy12, self.enemy13]
-        self.enemy_group = pygame.sprite.Group()
+        # self.enemies = [self.enemy,self.enemy2,self.enemy3, self.enemy4, self.enemy5, self.enemy6, self.enemy7, self.enemy8, self.enemy9,self.enemy10, self.enemy11, self.enemy12, self.enemy13]
+        # self.enemy_group = pygame.sprite.Group()
         
-        self.playerOnPlatform = False
-        self.noMovement = False
-        self.playerWin = False
-        self.currentPlatform = None
+        # self.playerOnPlatform = False
+        # self.noMovement = False
+        # self.playerWin = False
+        # self.currentPlatform = None
 
-        self.collisionDetect = CollisionDetection()
+        # self.collisionDetect = CollisionDetection()
 
-        self.soundManager = SoundManager()
-        self.soundEffects = soundEffects
-        self.fruitImages = fruitImages
-        self.startFruitX = 800
+        # self.soundManager = SoundManager()
+        # self.soundEffects = soundEffects
+        # self.fruitImages = fruitImages
+        # self.startFruitX = 800
 
 
       
-        self.fruit1 = Fruit(self.startFruitX, 100, self.fruitImages[0], self.fruitImages)
-        self.fruit2 = Fruit(self.startFruitX* 2, 200, self.fruitImages[0], self.fruitImages) 
-        self.fruit3 = Fruit(self.startFruitX * 3, 300, self.fruitImages[0], self.fruitImages)
-        self.fruit4 = Fruit(self.startFruitX* 4, 100, self.fruitImages[0], self.fruitImages) 
-        self.fruit5 = Fruit(self.startFruitX * 5, 300, self.fruitImages[0], self.fruitImages)
-        self.fruit6 = Fruit(self.startFruitX* 6, 300, self.fruitImages[0], self.fruitImages) 
-        self.fruit7 = Fruit(self.startFruitX * 7, 250, self.fruitImages[0], self.fruitImages)
-        self.fruits = [self.fruit1, self.fruit2, self.fruit3, self.fruit4, self.fruit5, self.fruit6, self.fruit7]
+        # self.fruit1 = Fruit(self.startFruitX, 100, self.fruitImages[0], self.fruitImages)
+        # self.fruit2 = Fruit(self.startFruitX* 2, 200, self.fruitImages[0], self.fruitImages) 
+        # self.fruit3 = Fruit(self.startFruitX * 3, 300, self.fruitImages[0], self.fruitImages)
+        # self.fruit4 = Fruit(self.startFruitX* 4, 100, self.fruitImages[0], self.fruitImages) 
+        # self.fruit5 = Fruit(self.startFruitX * 5, 300, self.fruitImages[0], self.fruitImages)
+        # self.fruit6 = Fruit(self.startFruitX* 6, 300, self.fruitImages[0], self.fruitImages) 
+        # self.fruit7 = Fruit(self.startFruitX * 7, 250, self.fruitImages[0], self.fruitImages)
+        # self.fruits = [self.fruit1, self.fruit2, self.fruit3, self.fruit4, self.fruit5, self.fruit6, self.fruit7]
         
-        
+    def generateObjects(self, levelData):
+        currentCoods = (0,0)
+        # Loop through rows
+        for row in levelData: #every row is 100px height         
+            currentCoords = (currentCoords[0], currentCoords[1] + 100)
+            for char in row: #every char is 100px width
+                if char == '-':
+                    currentCoords = (currentCoords[0] + 100, currentCoords[1])
+                
 
     def reset(self):
         self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages)

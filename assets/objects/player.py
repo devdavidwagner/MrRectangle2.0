@@ -12,7 +12,6 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.playerImages = playerImages
-
         self.moving = False
         self.jumping = False
         self.shooting = False
@@ -23,7 +22,6 @@ class Player(pygame.sprite.Sprite):
         self.ticks = 1
         self.shootingTicks = 1
         self.projectilesFired = 0
-
         self.SPEED = 4
         self.GRAVITY = 2
         self.JUMP_SPEED = 4
@@ -37,12 +35,9 @@ class Player(pygame.sprite.Sprite):
         self.splatSet = False
         self.score = 0
         self.prevScore = 0
-
         self.scoreAddedTo = False
         self.showAddTicks = 0
         self.diff = 0
-       
-
         pygame.font.init()
         self.fontAdded = pygame.font.Font(None, 55)
         self.font = pygame.font.Font(None, 36)
@@ -80,9 +75,6 @@ class Player(pygame.sprite.Sprite):
     def draw(self, screen):
         # Create a text surface with the player's score
         score_text = self.font.render(f"Score: {self.score}", True, (255, 255, 255))  # You can change the color (here, white) as needed
-
-       
-            
 
         # Get the rectangle that represents the text surface
         score_rect = score_text.get_rect()
@@ -126,7 +118,6 @@ class Player(pygame.sprite.Sprite):
                 self.showAddTicks = 0
                 self.scoreAddedTo = False
           
-
         self.prevScore = self.score
         
         
