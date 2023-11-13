@@ -20,9 +20,10 @@ class GameState:
 
     @staticmethod
     def get_instance():
-        if GameState.__instance == None:
-            GameState()
+        if GameState.__instance is None:
+            GameState.__instance = GameState()
         return GameState.__instance
+
 
     def set_score(self, new_score):
         self.score = new_score

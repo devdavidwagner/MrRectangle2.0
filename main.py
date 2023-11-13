@@ -57,28 +57,23 @@ def runPyGame():
   screen_height = 600
   screen = pygame.display.set_mode((screen_width, screen_height))
   
-  # screen is the surface representing the window.
-  # PyGame surfaces can be thought of as screen sections that you can draw onto.
-  # You can also draw surfaces onto other surfaces, rotate surfaces, and transform surfaces.
-  currentState = State.MENU
-
   # Main game loop.
   dt = 1/fps # dt is the time since last frame.
   menu_options = ["Start Game", "Controls", "About", "Quit Game"]
   menu = Menu(menu_options, screen_width)
 
   currentLevel = Level.ONE
-  levelMan = LevelManager(Level.ONE, screen, screen_width, screen_height)
+  
   deadImg = pygame.image.load("assets\sprites\dead.png").convert_alpha()
   deathScreen = Death(screen_width, screen_height, deadImg)
   winImg = pygame.image.load("assets\sprites\win.png").convert_alpha()
   winBg = pygame.image.load("assets\sprites\para0.png").convert_alpha()
   winScreen = Win(screen_width, screen_height,winImg, winBg)
   isAlive = True
-  gameState = GameState()
+  gameState = GameState.get_instance()
+  gameState.state = State.MENU
   
   while True: # Loop forever!
-    gameState.get_instance()
 
     if gameState.state == State.MENU:
       #run menu  
@@ -87,7 +82,7 @@ def runPyGame():
 
     if gameState.state == State.GAME:
       #run level 1   
-      levelMan.reset()
+      levelMan = LevelManager(Level.ONE, screen, screen_width, screen_height)
       levelMan.runLevel()
     
     if gameState.state == State.DEATH:

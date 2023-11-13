@@ -11,7 +11,7 @@ class StartPlatform(pygame.sprite.Sprite):
         self.speed = 2
         self.customDetect = CollisionDetection()
 
-        self.collideRect = pygame.Rect(x, y * 2, 800, 200)
+        self.collideRect = pygame.Rect(self.rect.x, self.rect.y, self.rect.width, self.rect.height)
 
     def move(self, direction):       
         if direction == Direction.LEFT:

@@ -1,7 +1,9 @@
 import pygame
 import sys
 from assets.objects.player import Player, Direction
-from assets.objects.platform import StartPlatform, Platform, EndPlatform
+from assets.objects.startPlatform import StartPlatform
+from assets.objects.endPlatform import EndPlatform
+from assets.objects.platform import Platform
 from core.helpers.backgroundManager import BackgroundManager
 from core.helpers.backgroundLayer import BackgroundLayer
 from assets.objects.enemy import Enemy
@@ -11,7 +13,7 @@ from core.helpers.soundManager import SoundManager
 
 class LevelBuilder:
     def __init__(self, currentLevel, screen_width, screen_height, tile_size):
-        self.filename = f"lvl{currentLevel}.txt"
+        self.filename = f".\\assets\levels\lvl{currentLevel}.txt"
         self.width = screen_width
         self.height = screen_height
         self.tile_size = tile_size
