@@ -24,11 +24,10 @@ class Player(pygame.sprite.Sprite):
         self.projectilesFired = 0
         self.SPEED = 4
         self.GRAVITY = 2
-        self.JUMP_SPEED = 4
+        self.JUMP_SPEED = 5
         self.JUMP_LENGTH_IN_TICKS = 30
         self.FALL_LENGTH_IN_TICKS = 40
         self.SHOOTING_LENGTH_IN_TICKS = 420
-
         self.dying = False
         self.dead = False
         self.dyingTicks = 0

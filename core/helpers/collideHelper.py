@@ -6,7 +6,7 @@ import pygame
 class CollisionDetection:
     @staticmethod
     def check_collisionTop(rect1:pygame.rect.Rect, rect2:pygame.rect.Rect):
-        if  rect1.bottom > rect2.top - (rect1.height * 2) and rect1.left > rect2.left and rect1.right < rect2.right:           
+        if  rect1.bottom == rect2.top - (rect1.height * 2) and (rect1.right > rect2.left and rect1.left < rect2.right):           
             return True
         else:
             return False
@@ -27,10 +27,19 @@ class CollisionDetection:
     
     @staticmethod
     def check_collisionBottom(rect1: pygame.rect.Rect, rect2: pygame.rect.Rect):
-        if rect1.top < rect2.bottom + (rect1.height * 2) and rect1.left > rect2.left and rect1.right < rect2.right:
+        if rect1.top == rect2.bottom + (rect1.height * 2) and (rect1.right > rect2.left and rect1.left < rect2.right):    
             return True
         else:
             return False
+        
+    @staticmethod
+    def check_collisionFruit(rect1: pygame.rect.Rect, rect2: pygame.rect.Rect):
+        # Check if rectangles are not colliding
+        if (rect1.bottom < rect2.top or rect1.top > rect2.bottom or
+            rect1.right < rect2.left or rect1.left > rect2.right):
+            return False
+        else:
+            return True
         
     @staticmethod
     def check_collision_all(rect1: pygame.rect.Rect, rect2: pygame.rect.Rect):

@@ -50,6 +50,8 @@ class Engine():
 
         self.enemyGroup = []
 
+
+
         
         self.noMovement = False
 
@@ -174,12 +176,11 @@ class Engine():
             self.enemyGroup.append(enemy)
             self.objects.add(enemy)
             enemy.LoadImages(self.enemyImages)
-        
-    
+          
     def runGame(self):
         print("Running game....")
         self.ticks = 1
-        print(f"Ticks....{self.ticks}")
+       # print(f"Ticks....{self.ticks}")
         engineOn = True
 
         #backgrounds
@@ -229,9 +230,10 @@ class Engine():
 
         self.soundManager.playTheme("Theme", 0)
         print("Engine starting...")
+
         while engineOn:
             self.ticks += 1
-            print(f"ticks...{self.ticks}")
+         #   print(f"ticks...{self.ticks}")
             # Calculate the time that has passed since the last frame
             current_time = pygame.time.get_ticks()
             delta_time = current_time - last_time
@@ -249,7 +251,7 @@ class Engine():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                 if event.type == pygame.KEYDOWN:
-                 if event.key == pygame.K_SPACE and not self.player.jumping and not self.player.falling:
+                 if event.key == pygame.K_SPACE and self.playerOnPlatform  and self.player.falling == False:
                      #JUMPING
                     self.player.jumping = True
                     self.soundManager.play_sound_effect("Jet", 3)
@@ -271,15 +273,6 @@ class Engine():
             
             self.noMovement = False
 
-            #collision (left/right)
-            for platform in self.platforms:            
-                if self.collisionDetect.check_collisionRight(self.player.rect, platform.collideRect):
-                    #self.noMovement = True
-                    break
-                if self.collisionDetect.check_collisionLeft(self.player.rect, platform.collideRect):
-                   # self.noMovement = True
-                    break
- 
             if self.playerOnPlatform:
                 self.player.Action(False, None, False, False)  #on platform
             else:
@@ -337,7 +330,7 @@ class Engine():
                     self.player.Action(False, Direction.LEFT)
 
         #shooting
-            if self.player.shooting == False and (keys[pygame.K_p] or keys[pygame.K_q] ) and len(self.projectilesInAir) < 50:
+            if self.player.shooting == False and (keys[pygame.K_p] or keys[pygame.K_q] ) and len(self.projectilesInAir) < 5:
                 self.player.Action(False,Direction.RIGHT,False,False,True)
                 self.soundManager.play_sound_effect("Laser", 1)
 
@@ -345,6 +338,7 @@ class Engine():
         #set sprites
             #shooting
             if self.player.shooting:
+                print("SHOOTING")
                 newProjectile = Projectile(self.player.rect.x + 20, self.player.rect.y + 65, self.projectileImage)
                 self.projectilesInAir.append(newProjectile)
                 self.objects.add(newProjectile)
@@ -353,8 +347,7 @@ class Engine():
                 elif self.player.shootingTicks > 80 and self.player.shootingTicks < 160:
                     self.player.ActiveSprite(self.playerImages[7])
                 elif self.player.shootingTicks > 340 and self.player.shootingTicks < 420:
-                    self.player.ActiveSprite(self.playerImages[8])
-            
+                    self.player.ActiveSprite(self.playerImages[8])           
             #jumping
             elif self.player.jumping and self.lastDirection == Direction.RIGHT:
                 self.player.ActiveSprite(self.playerImageRightJumping)
@@ -370,37 +363,33 @@ class Engine():
                 self.player.ActiveSprite(self.playerImageRightMoving)
             elif self.player.moving and self.lastDirection == Direction.LEFT:
                 self.player.ActiveSprite(self.playerImageLeftMoving)
-                
+            
+            
             
             if len(self.projectilesInAir) > 0:
+                print("Projectiles in air")
                 for projectile in self.projectilesInAir: 
-                    if len(self.enemyGroup) == 0:   
-                       # print("PROJECTILE X: " + str(projectile.collideRect.x))
-                        projectile.moving()
-
+                    print("PROJECTILE X: " + str(projectile.collideRect.x))                   
+                    projectile.moving()
                     
                     if projectile.rect.x > self.screen_width:
                        # print("PROJECTILE LEFT SCREEN")
                         self.projectilesInAir.remove(projectile)
-                        self.objects.remove(projectile)
-               
+                        self.objects.remove(projectile)            
             
             #fruits
             for fruit in self.fruits:
                 if not fruit.eaten:
-                    if self.collisionDetect.check_collisionRight(self.player.rect, fruit.collideRect):
-                        if self.collisionDetect.check_collisionBottom(self.player.rect, fruit.collideRect):
-                            fruit.collided = True
-                            print("Player collided fruit")
+                    if self.collisionDetect.check_collisionFruit(self.player.rect, fruit.collideRect):
+                        fruit.collided = True
+                        print("Player collided fruit")
                 else:
                     if not fruit.addedScore:
                         self.player.AddToScore(fruit.score)
                         fruit.addedScore = True
                         self.objects.remove(fruit)
                 
-
-            #enemies        
-                
+            #enemies              
             for enemy in self.enemies:   
                 if not self.objects.__contains__(enemy):
                     enemy.reset()
@@ -445,8 +434,6 @@ class Engine():
                                 self.player.AddToScore(enemy.score)
                                 enemy.playSound = False
           
-                                               
-
 
             #death
             if self.player.rect.top > self.screen_height:
@@ -486,13 +473,13 @@ class Engine():
             #draw
             
             self.draw()
-            print("Drawing...")
 
             if self.playerWin == True:
                 engineOn = False
                 #win
                 gameState = GameState.get_instance()
                 gameState.state = State.WIN
+
         self.soundManager.stop_all_sound_effects()
         print("Engine over.")
 
@@ -507,13 +494,40 @@ class Engine():
 
         self.player.draw(self.screen)
 
+        # for platform in self.platforms:
+        #     platform.draw_collision_rect(self.screen)
+
         for enemy in self.enemies:
             if enemy.dying:
                 enemy.display_enemy_score(self.screen, enemy.score)
 
         for fruit in self.fruits:
+            #fruit.draw_collision_rect(self.screen)
             if fruit.collided:
                 fruit.display_fruity_score(self.screen)
+
+        #level count
+        # Create a text surface with the player's score
+        level_text = self.font.render(f"Level: {self.currentLevel}", True, (255, 255, 255))  # You can change the color (here, white) as needed
+
+        # Get the rectangle that represents the text surface
+        level_rect = level_text.get_rect()
+        level_rect.width = level_rect.width  * 2
+        level_rect.height = level_rect.height * 1.5
+
+
+        # Set the position of the text (top-left corner)
+        level_rect.topleft = (self.screen_width - 150, 10)  # Adjust the position as needed
+
+        
+        # Create a translucent box behind the score
+        level_box = pygame.Surface((level_rect.width, level_rect.height))
+        level_box.set_alpha(200)  # Set the alpha value to control the transparency (0 is fully transparent, 255 is fully opaque)
+        level_box.fill((128, 128, 128))  # Set the color of the box (gray in this case)
+        self.screen.blit(level_box, level_rect.topleft)
+
+        # Blit the text surface onto the screen
+        self.screen.blit(level_text, (level_rect.x + level_rect.width /4, level_rect.y ))
         
         # Update the display
         pygame.display.update()

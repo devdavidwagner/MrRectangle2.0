@@ -72,6 +72,7 @@ def runPyGame():
   isAlive = True
   gameState = GameState.get_instance()
   gameState.state = State.MENU
+  switchLevel = False
   
   while True: # Loop forever!
 
@@ -82,8 +83,10 @@ def runPyGame():
 
     if gameState.state == State.GAME:
       #run level 1   
-      levelMan = LevelManager(Level.ONE, screen, screen_width, screen_height)
+      levelMan = LevelManager(currentLevel, screen, screen_width, screen_height)
       levelMan.runLevel()
+      switchLevel = True
+
     
     if gameState.state == State.DEATH:
       deathScreen.display(screen)
@@ -91,7 +94,10 @@ def runPyGame():
 
     if gameState.state == State.WIN:
       winScreen.display(screen)
-      winScreen.handle_event(event,screen)
+      winScreen.handle_event(event,screen)      
+      if switchLevel:
+        gameState.next_level()
+        switchLevel = False
 
     #events
     for event in pygame.event.get():

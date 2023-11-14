@@ -11,7 +11,7 @@ class Platform(pygame.sprite.Sprite):
         self.rect.y = y
         self.speed = 2
         self.customDetect = CollisionDetection()
-        self.collideRect = pygame.Rect(x, y, 450, 70)
+        self.collideRect =  pygame.Rect(x,  y, self.rect.width, self.rect.height)
     
     def move(self, direction):       
         if direction == Direction.LEFT:
@@ -24,3 +24,6 @@ class Platform(pygame.sprite.Sprite):
     def update(self, onPlatform, playerRect, direction = Direction.RIGHT, noMovement = False):
         if not noMovement:
             self.move(direction)
+
+    def draw_collision_rect(self, screen):
+        pygame.draw.rect(screen, (255, 0, 0), self.collideRect, 2)

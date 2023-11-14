@@ -12,8 +12,8 @@ class Fruit(pygame.sprite.Sprite):
         self.rect.y = y
         self.speed = 2
         self.customDetect = CollisionDetection()
-        self.collideRect = pygame.Rect(x, y, 80*2, 80*2)
-        self.collideRect.center = self.rect.center
+        self.collideRect = pygame.Rect(x,  y, self.rect.width, self.rect.height)
+        self.collideRect.center = (x,y)
         self.score = 400
         self.font = pygame.font.Font(None, 55)
         self.scoreTicks = 0
@@ -61,7 +61,8 @@ class Fruit(pygame.sprite.Sprite):
                 self.collided = False
                 self.eaten = True
 
-            
-        
+    def draw_collision_rect(self, screen):
+        pygame.draw.rect(screen, (255, 0, 0), self.collideRect, 2)            
+
     def ActiveSprite(self, image):
         self.image =  image
