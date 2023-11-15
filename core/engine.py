@@ -294,33 +294,33 @@ class Engine():
 
             #MOVING RIGHT
             stuck = False
-            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                #enemies
-                for fruit in self.fruits:
-                    fruit.update(Direction.RIGHT, self.noMovement)
-
-                self.player.Action(True, Direction.RIGHT)
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:      
                 self.lastDirection = Direction.RIGHT
-                self.backgroundManagerHill.update(Direction.RIGHT, self.noMovement, bg_distance)                   
-                self.backgroundManagerMtn.update(Direction.RIGHT, self.noMovement, bg_distance2)  
-                self.backgroundManagerCloud.update(Direction.RIGHT, self.noMovement, cloud_distance) 
-                for platform in self.platforms:                           
-                    platform.update(self.playerOnPlatform, self.player.rect, Direction.RIGHT, self.noMovement)              
+                if not self.player.ducked:
+                    #enemies
+                    for fruit in self.fruits:
+                        fruit.update(Direction.RIGHT, self.noMovement)
+                    self.player.Action(True, Direction.RIGHT)    
+                    self.backgroundManagerHill.update(Direction.RIGHT, self.noMovement, bg_distance)                   
+                    self.backgroundManagerMtn.update(Direction.RIGHT, self.noMovement, bg_distance2)  
+                    self.backgroundManagerCloud.update(Direction.RIGHT, self.noMovement, cloud_distance) 
+                    for platform in self.platforms:                           
+                        platform.update(self.playerOnPlatform, self.player.rect, Direction.RIGHT, self.noMovement)              
            
            
             #MOVING LEFT
-            elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                 #enemies           
-                for fruit in self.fruits:
-                    fruit.update(Direction.LEFT, self.noMovement)
-            
-                self.player.Action(True, Direction.LEFT)
+            elif keys[pygame.K_LEFT] or keys[pygame.K_a]:             
                 self.lastDirection = Direction.LEFT
-                self.backgroundManagerHill.update(Direction.LEFT, self.noMovement, bg_distance)    
-                self.backgroundManagerMtn.update(Direction.LEFT, self.noMovement, bg_distance2)    
-                self.backgroundManagerCloud.update(Direction.LEFT, self.noMovement, cloud_distance) 
-                for platform in self.platforms:                         
-                    platform.update(self.playerOnPlatform, self.player.rect, Direction.LEFT, self.noMovement)                            
+                if not self.player.ducked:
+                    #enemies           
+                    for fruit in self.fruits:
+                        fruit.update(Direction.LEFT, self.noMovement)
+                    self.player.Action(True, Direction.LEFT)
+                    self.backgroundManagerHill.update(Direction.LEFT, self.noMovement, bg_distance)    
+                    self.backgroundManagerMtn.update(Direction.LEFT, self.noMovement, bg_distance2)    
+                    self.backgroundManagerCloud.update(Direction.LEFT, self.noMovement, cloud_distance) 
+                    for platform in self.platforms:                         
+                        platform.update(self.playerOnPlatform, self.player.rect, Direction.LEFT, self.noMovement)                            
             #STILL
             else:
                 #enemies
@@ -333,6 +333,7 @@ class Engine():
             if self.player.shooting == False and (keys[pygame.K_p] or keys[pygame.K_q] ) and len(self.projectilesInAir) < 5:
                 self.player.Action(False,Direction.RIGHT,False,False,True)
                 self.soundManager.play_sound_effect("Laser", 1)
+      
 
         #environment                               
         #set sprites
@@ -375,7 +376,34 @@ class Engine():
                     if projectile.rect.x > self.screen_width:
                        # print("PROJECTILE LEFT SCREEN")
                         self.projectilesInAir.remove(projectile)
-                        self.objects.remove(projectile)            
+            
+                        self.objects.remove(projectile)        
+            #duck
+            if self.currentPlatform is not None:
+                print(" Y: " + str(self.currentPlatform.rect.y))
+            if keys[pygame.K_s]:
+                self.player.Action(False,Direction.RIGHT,False,False,False, True)
+                print("DUCKING Y: " + str(self.player.rect.y))
+                self.player.duckingTicks += 1
+                if not self.player.ducked:
+                    self.player.ducked = True
+                    self.player.Duck()
+                if self.player.duckingTicks > 0 and self.player.duckingTicks < 20:
+                    self.player.ActiveSpriteAndResize(self.playerImages[14], 40, 40)
+                elif self.player.duckingTicks > 20 and self.player.duckingTicks < 40:
+                    self.player.ActiveSpriteAndResize(self.playerImages[15], 40, 40)
+                elif self.player.duckingTicks > 40:
+                    self.player.ActiveSpriteAndResize(self.playerImages[16], 40, 40)  
+            else:
+                print("REG Y: " + str(self.player.rect.y))
+                    
+            
+            if self.player.ducked and not keys[pygame.K_s]:
+                self.player.ActiveSpriteAndResize(self.playerImages[0], 40, 80)  
+                self.player.duckingTicks = 0  
+                self.player.ducked = False
+                self.player.rect.y -= 40
+                self.player.EndDuck()
             
             #fruits
             for fruit in self.fruits:
@@ -493,7 +521,7 @@ class Engine():
         self.objects.draw(self.screen)
 
         self.player.draw(self.screen)
-
+        # self.player.draw_collision_rect(self.screen)
         # for platform in self.platforms:
         #     platform.draw_collision_rect(self.screen)
 

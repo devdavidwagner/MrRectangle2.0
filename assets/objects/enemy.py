@@ -77,8 +77,6 @@ class Enemy(pygame.sprite.Sprite):
         self.movingTicks += 1
         self.rect.x -= self.SPEED_LEFT    
        # self.rect.x += self.SPEED / 2
-        if self.rect.x < 0:
-            self.rect.x = self.originX
 
         if self.movingTicks > 20 and len(self.enemyImages) > 0:
             self.ActiveSprite(self.enemyImages[0])
@@ -95,10 +93,6 @@ class Enemy(pygame.sprite.Sprite):
         self.movingTicks += 1
         if self.movingTicks % 20 == 1:
             self.rect.x -= self.SPEED   
-
-        if self.rect.x < 0:
-            self.rect.x = self.originX
-
         if self.movingTicks > 20 and len(self.enemyImages) > 0:
             self.ActiveSprite(self.enemyImages[0])
         if self.movingTicks > 80 and len(self.enemyImages) > 0:
@@ -124,9 +118,7 @@ class Enemy(pygame.sprite.Sprite):
     def UpdateEnemy(self,speed):
         self.movingTicks += 1
         self.rect.x -= self.SPEED / 2    
-    #
-        if self.rect.x < 0:
-            self.rect.x = self.originX
+    
 
         if self.movingTicks > 20 and len(self.enemyImages) > 0:
             self.ActiveSprite(self.enemyImages[0])

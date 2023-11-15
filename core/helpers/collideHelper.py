@@ -6,7 +6,7 @@ import pygame
 class CollisionDetection:
     @staticmethod
     def check_collisionTop(rect1:pygame.rect.Rect, rect2:pygame.rect.Rect):
-        if  rect1.bottom == rect2.top - (rect1.height * 2) and (rect1.right > rect2.left and rect1.left < rect2.right):           
+        if  rect1.bottom == rect2.top + 10 and (rect1.right > rect2.left and rect1.left < rect2.right):           
             return True
         else:
             return False

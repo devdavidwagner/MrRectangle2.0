@@ -9,7 +9,10 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, image, playerImages):
         super().__init__()
         self.image = image
-        self.rect = self.image.get_rect()
+  
+        self.rect = self.image.get_bounding_rect()
+        self.rect.height = 80
+        self.rect.width = 40
         self.rect.center = (x, y)
         self.playerImages = playerImages
         self.moving = False
@@ -40,6 +43,12 @@ class Player(pygame.sprite.Sprite):
         pygame.font.init()
         self.fontAdded = pygame.font.Font(None, 55)
         self.font = pygame.font.Font(None, 36)
+
+        self.ducking = True
+        self.duckingTicks = 0
+        self.ducked = False
+        self.yBeforeDuck = self.rect.x
+
     
     def AddToScore(self, add):
         self.score += add 
@@ -122,12 +131,16 @@ class Player(pygame.sprite.Sprite):
         
         
 
-    def Action(self, moving, direction = Direction.RIGHT, falling = False, initJump = False, shooting = False):  
+    def Action(self, moving, direction = Direction.RIGHT, falling = False, initJump = False, shooting = False, ducking = False):  
         self.moving = moving
         self.falling = falling
         self.shooting = shooting
+        self.ducking = ducking
         self.ticks += 1
 
+        if not ducking:
+            self.yBeforeDuck = self.rect.y
+        
         if shooting:
             self.shootingTicks += 1
         
@@ -161,9 +174,22 @@ class Player(pygame.sprite.Sprite):
             if self.FALL_LENGTH_IN_TICKS % self.ticksFallingAfterJump  == 1:
                 self.fallAfterJump = False
                 self.ticksFallingAfterJump = 1
-        
+    
+    def Duck(self):
+        pass
 
+    def EndDuck(self):
+        pass
 
     def ActiveSprite(self, image):
         self.image =  pygame.transform.scale(image, (40, 80))
+
+    def ActiveSpriteAndResize(self, image, width = 40, height = 80):
+        self.image =  pygame.transform.scale(image, (width, height))
+        self.rect.height = height
+        
+    
+    def draw_collision_rect(self, screen):
+        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
+
 

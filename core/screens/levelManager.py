@@ -47,6 +47,10 @@ class LevelManager():
         deadRight3 = spriteSheet.load_image(self.spriteWidth * 12,0,self.spriteWidth, self.spriteHeight) 
         deadRight4 = spriteSheet.load_image(self.spriteWidth * 13,0,self.spriteWidth, self.spriteHeight) 
 
+        ducking = spriteSheet.load_image(self.spriteWidth * 14,0,self.spriteWidth, self.spriteHeight) 
+        ducking2 = spriteSheet.load_image(self.spriteWidth * 15,0,self.spriteWidth, self.spriteHeight) 
+        ducking3 = spriteSheet.load_image(self.spriteWidth * 16,0,self.spriteWidth, self.spriteHeight) 
+
         playerProjectile = pygame.image.load("assets\sprites\PlayerShot.png").convert_alpha()
 
         enemyLeft = spriteSheet.load_image(0,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
@@ -84,7 +88,7 @@ class LevelManager():
         fruit4 = pygame.image.load("assets\sprites\\fruit4.png").convert_alpha()
         self.fruitImages = [fruit, fruit2, fruit3, fruit4]
 
-        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4]
+        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4, ducking, ducking2,ducking3]
         self.platformImages = [platformStart, platformSmall, platformBig, platformEnd]
         self.parallaxImages = [para0, para1, para2, para3] #BACKGROUNDS
         self.effectImages = [splat,splat2,splat3]
