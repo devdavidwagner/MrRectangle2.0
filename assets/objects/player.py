@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
         self.JUMP_SPEED = 5
         self.JUMP_LENGTH_IN_TICKS = 30
         self.FALL_LENGTH_IN_TICKS = 40
-        self.SHOOTING_LENGTH_IN_TICKS = 420
+        self.SHOOTING_LENGTH_IN_TICKS = 600
         self.dying = False
         self.dead = False
         self.dyingTicks = 0
@@ -48,6 +48,15 @@ class Player(pygame.sprite.Sprite):
         self.duckingTicks = 0
         self.ducked = False
         self.yBeforeDuck = self.rect.x
+
+        self.fallingTicks = 0
+        self.jumpUsed = False
+
+        self.jumpBoost = False
+        self.jumpBoostTicks = 0
+        self.ticksAfterBoost = 0
+        self.fallAfterBoost = False
+
 
     
     def AddToScore(self, add):
@@ -127,11 +136,19 @@ class Player(pygame.sprite.Sprite):
                 self.scoreAddedTo = False
           
         self.prevScore = self.score
-        
-        
+    
+    def JumpBoost(self):
+        self.jumpBoostTicks += 1
+        if self.jumpBoostTicks < 100:        
+            self.rect.y -= 5     
+            print("JUMP BOOST") 
+        else:
+            self.jumpBoost = False
+            self.jumpBoostTicks = 0 
+
         
 
-    def Action(self, moving, direction = Direction.RIGHT, falling = False, initJump = False, shooting = False, ducking = False):  
+    def Action(self, moving, direction = Direction.RIGHT, falling = False, initJump = False, shooting = False, ducking = False, jumpBoost = False):  
         self.moving = moving
         self.falling = falling
         self.shooting = shooting
@@ -144,15 +161,13 @@ class Player(pygame.sprite.Sprite):
         if shooting:
             self.shootingTicks += 1
         
-        if self.shootingTicks > self.SHOOTING_LENGTH_IN_TICKS:
-            shooting = False
-            self.shootingTicks = 0
             
         if initJump == True and not self.jumping and not self.falling:
             self.jumping = initJump
                    
         if self.falling and not self.jumping or self.fallAfterJump:
             self.rect.y += self.GRAVITY
+           
 
         if self.ticks % 20 == 1:
             

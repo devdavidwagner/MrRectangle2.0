@@ -8,11 +8,11 @@ class Direction(Enum):
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
         super().__init__()
-        self.image = image
+        self.image =  pygame.transform.scale(image, (40, 20))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-        self.collideRect = pygame.Rect(x, y, 20, 10)
-        self.speed = 4
+        self.collideRect = pygame.Rect(x, y, 40, 20)
+        self.speed = 3
         self.ticksMoving = 1
 
     def moving(self):

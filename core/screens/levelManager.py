@@ -51,6 +51,9 @@ class LevelManager():
         ducking2 = spriteSheet.load_image(self.spriteWidth * 15,0,self.spriteWidth, self.spriteHeight) 
         ducking3 = spriteSheet.load_image(self.spriteWidth * 16,0,self.spriteWidth, self.spriteHeight) 
 
+        falling1 = spriteSheet.load_image(self.spriteWidth * 17,0,self.spriteWidth, self.spriteHeight) 
+        falling2 = spriteSheet.load_image(self.spriteWidth * 18,0,self.spriteWidth, self.spriteHeight) 
+
         playerProjectile = pygame.image.load("assets\sprites\PlayerShot.png").convert_alpha()
 
         enemyLeft = spriteSheet.load_image(0,self.enemyYRow ,self.enemyWidth, self.enemyHeight)     
@@ -88,7 +91,9 @@ class LevelManager():
         fruit4 = pygame.image.load("assets\sprites\\fruit4.png").convert_alpha()
         self.fruitImages = [fruit, fruit2, fruit3, fruit4]
 
-        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4, ducking, ducking2,ducking3]
+        jumpBlock = pygame.image.load("assets\sprites\\jumpBlock.png").convert_alpha()
+
+        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4, ducking, ducking2,ducking3, falling1,falling2]
         self.platformImages = [platformStart, platformSmall, platformBig, platformEnd]
         self.parallaxImages = [para0, para1, para2, para3] #BACKGROUNDS
         self.effectImages = [splat,splat2,splat3]
@@ -97,7 +102,7 @@ class LevelManager():
         self.game_state = GameState.get_instance()
         self.currentLevel = self.game_state.return_level()
      
-        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages,  self.fruitImages, self.effectImages, self.soundEffects)
+        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages,  self.fruitImages, self.effectImages, self.soundEffects, jumpBlock)
 
 
     def runLevel(self):

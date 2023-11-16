@@ -14,9 +14,10 @@ from assets.objects.startPlatform import StartPlatform
 from assets.objects.projectile import Projectile
 from assets.objects.splat import Splat
 from assets.objects.fruit import Fruit
+from assets.objects.jumpBlock import JumpBlock
 
 class Engine():
-    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list):
+    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list, jumpBlockImage:list):
         self.screen = screen
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -44,13 +45,14 @@ class Engine():
         self.platforms = []
         self.enemies = []
         self.fruits = []
+        self.jumpBlocks = []
         
         self.fruitImages = fruitImages
         self.enemyImages = enemyImages
 
         self.enemyGroup = []
 
-
+        self.jumpBlockImage = jumpBlockImage
 
         
         self.noMovement = False
@@ -134,6 +136,9 @@ class Engine():
                 elif char == '*': #fruit
                     newFruit = Fruit(xCoods, currentCoods[1], self.fruitImages[0], self.fruitImages)
                     self.fruits.append(newFruit)
+                elif char == '^': #jumpBlock:
+                    newJumpBlock = JumpBlock(xCoods, currentCoods[1], self.jumpBlockImage)
+                    self.jumpBlocks.append(newJumpBlock)
                 elif char == '<': #start lvl platform
                     if self.buildStartPlatform:
                         self.startPlatformWidth += charWidth
@@ -199,6 +204,9 @@ class Engine():
             platform_group.add(platform)
             self.objects.add(platform)
 
+        #jumpBlock
+        for block in self.jumpBlocks:
+            self.objects.add(block)
 
         print(f"Platforms added...")
         #enemy       
@@ -277,6 +285,7 @@ class Engine():
                 self.player.Action(False, None, False, False)  #on platform
             else:
                 self.player.Action(False,  None, True, False) #falling
+                self.currentPlatform = None
 
             keys = pygame.key.get_pressed()
 
@@ -300,6 +309,8 @@ class Engine():
                     #enemies
                     for fruit in self.fruits:
                         fruit.update(Direction.RIGHT, self.noMovement)
+                    for block in self.jumpBlocks:
+                        block.update(Direction.RIGHT, self.noMovement)
                     self.player.Action(True, Direction.RIGHT)    
                     self.backgroundManagerHill.update(Direction.RIGHT, self.noMovement, bg_distance)                   
                     self.backgroundManagerMtn.update(Direction.RIGHT, self.noMovement, bg_distance2)  
@@ -315,6 +326,8 @@ class Engine():
                     #enemies           
                     for fruit in self.fruits:
                         fruit.update(Direction.LEFT, self.noMovement)
+                    for block in self.jumpBlocks:
+                        block.update(Direction.LEFT, self.noMovement)
                     self.player.Action(True, Direction.LEFT)
                     self.backgroundManagerHill.update(Direction.LEFT, self.noMovement, bg_distance)    
                     self.backgroundManagerMtn.update(Direction.LEFT, self.noMovement, bg_distance2)    
@@ -340,15 +353,17 @@ class Engine():
             #shooting
             if self.player.shooting:
                 print("SHOOTING")
-                newProjectile = Projectile(self.player.rect.x + 20, self.player.rect.y + 65, self.projectileImage)
-                self.projectilesInAir.append(newProjectile)
-                self.objects.add(newProjectile)
-                if self.player.shootingTicks > 0 and self.player.shootingTicks < 80:
+                if self.player.shootingTicks > 0 and self.player.shootingTicks < 50:
                     self.player.ActiveSprite(self.playerImages[6])
-                elif self.player.shootingTicks > 80 and self.player.shootingTicks < 160:
+                elif self.player.shootingTicks > 50 and self.player.shootingTicks < 100:
                     self.player.ActiveSprite(self.playerImages[7])
-                elif self.player.shootingTicks > 340 and self.player.shootingTicks < 420:
-                    self.player.ActiveSprite(self.playerImages[8])           
+                elif self.player.shootingTicks > 100 and self.player.shootingTicks < 150:
+                    self.player.ActiveSprite(self.playerImages[8])   
+                    newProjectile = Projectile(self.player.rect.x + 20, self.player.rect.y + 65, self.projectileImage)
+                    self.projectilesInAir.append(newProjectile)
+                    self.objects.add(newProjectile)        
+                    self.player.shooting = False
+                    self.player.shootingTicks = 0
             #jumping
             elif self.player.jumping and self.lastDirection == Direction.RIGHT:
                 self.player.ActiveSprite(self.playerImageRightJumping)
@@ -379,11 +394,9 @@ class Engine():
             
                         self.objects.remove(projectile)        
             #duck
-            if self.currentPlatform is not None:
-                print(" Y: " + str(self.currentPlatform.rect.y))
             if keys[pygame.K_s]:
                 self.player.Action(False,Direction.RIGHT,False,False,False, True)
-                print("DUCKING Y: " + str(self.player.rect.y))
+                #print("DUCKING Y: " + str(self.player.rect.y))
                 self.player.duckingTicks += 1
                 if not self.player.ducked:
                     self.player.ducked = True
@@ -394,8 +407,6 @@ class Engine():
                     self.player.ActiveSpriteAndResize(self.playerImages[15], 40, 40)
                 elif self.player.duckingTicks > 40:
                     self.player.ActiveSpriteAndResize(self.playerImages[16], 40, 40)  
-            else:
-                print("REG Y: " + str(self.player.rect.y))
                     
             
             if self.player.ducked and not keys[pygame.K_s]:
@@ -404,6 +415,15 @@ class Engine():
                 self.player.ducked = False
                 self.player.rect.y -= 40
                 self.player.EndDuck()
+
+            if not self.playerOnPlatform and not self.player.jumping and not self.player.fallAfterJump and self.player.rect.y > 300:
+                self.player.fallingTicks += 1
+                if self.player.fallingTicks > 0 and self.player.fallingTicks < 70:
+                    self.player.ActiveSprite(self.playerImages[17])
+                elif self.player.fallingTicks > 70:
+                    self.player.ActiveSprite(self.playerImages[18])
+            else:
+                self.player.fallingTicks = 0
             
             #fruits
             for fruit in self.fruits:
@@ -416,6 +436,19 @@ class Engine():
                         self.player.AddToScore(fruit.score)
                         fruit.addedScore = True
                         self.objects.remove(fruit)
+
+            
+            #jump blocks
+            for block in self.jumpBlocks:
+                if self.collisionDetect.check_collisionTop(self.player.rect, block.collideRect):
+                    self.player.jumpBoost = True
+                    print("COLLISION")
+                    break
+
+            if self.player.jumpBoost:
+                self.player.JumpBoost()
+                    
+                    
                 
             #enemies              
             for enemy in self.enemies:   
@@ -528,6 +561,7 @@ class Engine():
         for enemy in self.enemies:
             if enemy.dying:
                 enemy.display_enemy_score(self.screen, enemy.score)
+
 
         for fruit in self.fruits:
             #fruit.draw_collision_rect(self.screen)
