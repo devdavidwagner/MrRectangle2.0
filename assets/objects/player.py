@@ -1,12 +1,13 @@
 import pygame
 from enum import Enum
+from core.stateManager import GameState
 
 class Direction(Enum):
     LEFT = 1
     RIGHT = 2
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, image, playerImages):
+    def __init__(self, x, y, image, playerImages, score):
         super().__init__()
         self.image = image
   
@@ -35,7 +36,7 @@ class Player(pygame.sprite.Sprite):
         self.dead = False
         self.dyingTicks = 0
         self.splatSet = False
-        self.score = 0
+        self.score = score
         self.prevScore = 0
         self.scoreAddedTo = False
         self.showAddTicks = 0
@@ -56,7 +57,17 @@ class Player(pygame.sprite.Sprite):
         self.jumpBoostTicks = 0
         self.ticksAfterBoost = 0
         self.fallAfterBoost = False
+        self.boxColor = (29,118,76)  # light green
+        gameState = GameState.get_instance()
+        self.playerLives = gameState.get_player_life()
+        self.life_image = pygame.image.load("assets\sprites\life.png")  # Replace with the actual path to your "life.png" image
+        self.life_image = pygame.transform.scale(self.life_image, (50, 50))
+        self.life_rect = pygame.Rect(350, 10, 200, 35)
 
+        self.life_box = pygame.Surface((self.life_rect.width, self.life_rect.height))
+        self.life_box.set_alpha(200)  # Set the alpha value to control the transparency (0 is fully transparent, 255 is fully opaque)
+        self.life_box.fill(self.boxColor)  # Set the color of the box 
+        
 
     
     def AddToScore(self, add):
@@ -66,7 +77,7 @@ class Player(pygame.sprite.Sprite):
         self.dying = True
 
     def InstaDie(self):
-        self.ActiveSprite(self.playerImages[14])
+        self.ActiveSprite(self.playerImages[17])
         self.dyingTicks = 0
         self.dead = True
 
@@ -76,18 +87,19 @@ class Player(pygame.sprite.Sprite):
         self.shooting = False
         self.dyingTicks += 1
         if self.dyingTicks > 0 and len(self.playerImages) > 0:
-            self.ActiveSprite(self.playerImages[11])
+            self.ActiveSprite(self.playerImages[20])
         if self.dyingTicks > 120 and len(self.playerImages) > 0:
-            self.ActiveSprite(self.playerImages[12])
+            self.ActiveSprite(self.playerImages[21])
         if self.dyingTicks > 240 and len(self.playerImages)> 0:
-            self.ActiveSprite(self.playerImages[13])
+            self.ActiveSprite(self.playerImages[22])
          
 
         if self.dyingTicks > 360:
-            self.ActiveSprite(self.playerImages[14])
+            self.ActiveSprite(self.playerImages[20])
             self.dyingTicks = 0
             self.dead = True
             self.dying = False
+
 
     def draw(self, screen):
         # Create a text surface with the player's score
@@ -106,12 +118,12 @@ class Player(pygame.sprite.Sprite):
         # Create a translucent box behind the score
         score_box = pygame.Surface((score_rect.width, score_rect.height))
         score_box.set_alpha(200)  # Set the alpha value to control the transparency (0 is fully transparent, 255 is fully opaque)
-        score_box.fill((128, 128, 128))  # Set the color of the box (gray in this case)
+        score_box.fill(self.boxColor)  # Set the color of the box (gray in this case)
 
         screen.blit(score_box, score_rect.topleft)
         # Blit the text surface onto the screen
         screen.blit(score_text, (score_rect.x + score_rect.width /4, score_rect.y ))
-
+        
          
 
         if self.prevScore != self.score and not self.scoreAddedTo:
@@ -136,6 +148,14 @@ class Player(pygame.sprite.Sprite):
                 self.scoreAddedTo = False
           
         self.prevScore = self.score
+
+        #lives
+        life_text = self.font.render(f"Lives:", True, (255, 255, 255))  # You can change the color (here, white) as needed
+        screen.blit(self.life_box, (self.life_rect.x , self.life_rect.y ))
+        screen.blit(life_text, (self.life_rect.x , self.life_rect.y ))
+        
+        for i in range(self.playerLives):
+            screen.blit(self.life_image, (self.life_rect.x + life_text.get_width() + (i * 40), 0))  # Adjust the spacing as needed
     
     def JumpBoost(self):
         self.jumpBoostTicks += 1

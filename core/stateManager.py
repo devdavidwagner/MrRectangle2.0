@@ -6,6 +6,7 @@ class State(Enum):
     DEATH = 3
     RESTART = 4
     WIN = 5
+    GAME_OVER = 6
 
 class GameState:
     __instance = None
@@ -14,19 +15,35 @@ class GameState:
             raise Exception("This class is a singleton!")
         else:
             GameState.__instance = self
+            self.scoreUpdated = False
             self.state = State.MENU
             self.score = 0
             self.level = 1
+            self.playerLives = 3
 
     @staticmethod
     def get_instance():
         if GameState.__instance is None:
             GameState.__instance = GameState()
         return GameState.__instance
+    
+    def resetLives(self):
+        self.playerLives = 3
 
+    def remove_player_life(self):
+        self.playerLives -= 1
 
+    def get_player_life(self):
+        return self.playerLives
+    
     def set_score(self, new_score):
         self.score = new_score
+
+    def set_high_score_updated(self, set):
+        self.scoreUpdated = set
+    
+    def check_high_score_updated(self):
+        return self.scoreUpdated
 
     def get_score(self):
         return self.score

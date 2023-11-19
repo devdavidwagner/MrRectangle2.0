@@ -2,14 +2,14 @@ import pygame
 from core.stateManager import State, GameState
 from core.helpers.soundManager import SoundManager
 
-class Death:
+class GameOver:
     def __init__(self, screen_width, screen_height, deadPlayerImg):
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.font = pygame.font.Font(None, 55) 
-        self.scoreFont =  pygame.font.Font(None, 75)  
-        self.death_text = self.font.render("RIP MR. RECTANGLE", True, (255, 0, 0))
-        self.restart_text = self.font.render("PRESS ANY KEY TO RESTART", True, (255, 255, 255))
+        self.font = pygame.font.Font(None, 34) 
+        self.scoreFont =  pygame.font.Font(None, 60)  
+        self.death_text = self.font.render("GAME OVER", True, (255, 0, 0))
+        self.restart_text = self.font.render("PRESS ANY KEY TO RETURN TO MAIN MENU", True, (255, 255, 255))
        
         self.death_text_rect = self.death_text.get_rect(center=(screen_width/2, screen_height/2 - 50))
         self.restart_text_rect = self.restart_text.get_rect(center=(screen_width/2, screen_height/2 + 50))
@@ -18,7 +18,7 @@ class Death:
         self.soundManager = SoundManager()
         self.soundManager.load_sound_effect("Death", "assets\sounds\Died.wav")
         self.soundPlayed = False
-    
+        
     def display(self, screen, score):
         scoreText = self.scoreFont.render("SCORE: " + str(score), True, (0, 255, 0))
         score_text_rect = scoreText.get_rect()
@@ -44,6 +44,6 @@ class Death:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 self.soundPlayed = False
-                currentState.state = State.GAME
+                currentState.state = State.MENU
 
 

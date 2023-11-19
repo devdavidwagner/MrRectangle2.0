@@ -12,6 +12,8 @@ class JumpBlock(pygame.sprite.Sprite):
         self.speed = 2
         self.customDetect = CollisionDetection()
         self.collideRect =  pygame.Rect(x,  y, self.rect.width, self.rect.height)
+        self.hit = False
+        self.activateSprite = 1
     
     def move(self, direction):       
         if direction == Direction.LEFT:
@@ -27,3 +29,6 @@ class JumpBlock(pygame.sprite.Sprite):
 
     def draw_collision_rect(self, screen):
         pygame.draw.rect(screen, (255, 0, 0), self.collideRect, 2)
+
+    def ActiveSprite(self, image):
+        self.image =  image

@@ -3,68 +3,67 @@ from core.stateManager import State
 from core.stateManager import State, GameState
 
 class Menu:
-    def __init__(self, options, screen_width):
-        self.options = options
+    def __init__(self, screen_width, screen_height, width,height):
         self.screen_width = screen_width
-        self.font = pygame.font.Font(None, 36)
-        self.font_color = (0, 0, 0)
+        self.screen_height = screen_height
+        self.fontMain = pygame.font.Font(None, 56)
+        self.font = pygame.font.Font(None, 46)
+        self.font_color = (0,250,154)  # light green
         self.bg_color = (255, 255, 255)
         self.option_rects = []
-        self.menu_rect = None
+        self.menu_rect = pygame.Rect((screen_width / 2) - width / 4, screen_height /2, width, height)
+        self.highScoreRect = pygame.Rect(screen_width / 2, (screen_height /2) + height, width, height)
         self.selected = 0
+        self.background_image = pygame.image.load("assets\sprites\mainMenu.png")
 
-        self.render_options()
+        # Set up flashing variables
+        self.flash_interval = 250  # in milliseconds
+        self.last_flash_time = pygame.time.get_ticks()
+        self.flash_color = (0,255,0)
+        self.highScore = self.load_high_score()
 
-    def render_options(self):
-        # Clear the option rects list
-        self.option_rects = []
 
-        # Render each option and store its rect
-        for i, option in enumerate(self.options):
-            text = self.font.render(option, True, self.font_color)
-            rect = text.get_rect(center=(self.screen_width/2, 200 + i*50))
-            self.option_rects.append(rect)
-
-        # Render the menu text and store its rect
-        menu_text = self.font.render("Menu", True, self.font_color)
-        self.menu_rect = menu_text.get_rect(center=(self.screen_width/2, 100))
+    def load_high_score(self):
+        try:
+            with open("high_score.txt", "r") as file:
+                high_score_str = file.read()
+                if high_score_str.isdigit():
+                    high_score = int(high_score_str)
+                    print("High score loaded successfully:", high_score)
+                    return high_score
+                else:
+                    print("Invalid high score format in the file.")
+                    return None
+        except IOError as e:
+            print("Error loading high score:", str(e))
+            return None
 
     def draw(self, screen):
+         # Check if it's time to toggle the flash color
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_flash_time >= self.flash_interval:
+            self.last_flash_time = current_time
+            if self.flash_color == (0,250,154):
+                self.flash_color = (255,255,0)  # yellow
+            else:
+                self.flash_color = (0,250,154)  # light green
         # Clear the screen
-        screen.fill(self.bg_color)
-
-        # Draw the menu options
-        screen.blit(self.font.render("Menu", True, self.font_color), self.menu_rect)
-        for i, rect in enumerate(self.option_rects):
-            if i == self.selected:
-                pygame.draw.rect(screen, (100, 100, 100), rect, 5)
-            screen.blit(self.font.render(self.options[i], True, self.font_color), rect)
+        screen.blit(self.background_image, (0, 0))
+        # Render and draw the flashing text
+        text_surface = self.fontMain.render("Press Enter to Start!", True, self.flash_color)
+        menu_rect = text_surface.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
+        screen.blit(text_surface, menu_rect)
+        screen.blit(self.font.render("High Score: " + str(self.highScore), True, self.font_color), self.highScoreRect)
 
         # Update the display
         pygame.display.update()
 
     def handle_event(self, event, screen):
         currentState = GameState.get_instance()
-
-
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
-                self.selected -= 1
-                if self.selected < 0:
-                    self.selected = len(self.options) - 1
-            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                self.selected += 1
-                if self.selected == len(self.options):
-                    self.selected = 0
-            elif event.key == pygame.K_RETURN:
+            if event.key == pygame.K_RETURN:
                 if self.selected == 0:
                     # Start the game
                     currentState.state = State.GAME
-                elif self.selected == 1:
-                    # Show the instructions
-                    pass
-                elif self.selected == 2:
-                    # Quit the game
-                    pygame.quit()
 
         self.draw(screen)

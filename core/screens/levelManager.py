@@ -29,30 +29,42 @@ class LevelManager():
        # 0, 14, 28, 42, 56, 70,
 
         
-        imageCharStillRight = spriteSheet.load_image(0,0,self.spriteWidth, self.spriteHeight)  
+        imageCharStillRight = spriteSheet.load_image(0,0,self.spriteWidth, self.spriteHeight) 
+
         imageCharMoveRight = spriteSheet.load_image(self.spriteWidth,0,self.spriteWidth, self.spriteHeight)
-        imageJumpingRight = spriteSheet.load_image(self.spriteWidth * 2 ,0,self.spriteWidth, self.spriteHeight)
-               
-        imageCharStillLeft = spriteSheet.load_image(self.spriteWidth * 3,0,self.spriteWidth, self.spriteHeight)       
-        imagecharMoveLeft = spriteSheet.load_image(self.spriteWidth * 4,0,self.spriteWidth, self.spriteHeight)
-        imageJumpingLeft = spriteSheet.load_image(self.spriteWidth * 5,0,self.spriteWidth, self.spriteHeight)
+        imageCharMoveRight2 = spriteSheet.load_image(self.spriteWidth * 2,0,self.spriteWidth, self.spriteHeight)
+        imageCharMoveRight3 = spriteSheet.load_image(self.spriteWidth * 3,0,self.spriteWidth, self.spriteHeight)
+        
+        imageJumpingRight = spriteSheet.load_image(self.spriteWidth * 4 ,0,self.spriteWidth, self.spriteHeight)
+        imageJumpingRight2 = spriteSheet.load_image(self.spriteWidth * 5 ,0,self.spriteWidth, self.spriteHeight)
+        imageJumpingRight3 = spriteSheet.load_image(self.spriteWidth * 6 ,0,self.spriteWidth, self.spriteHeight)
 
-        imageShootingRight = spriteSheet.load_image(self.spriteWidth * 6,0,self.spriteWidth, self.spriteHeight)     
-        imageShootingRight2 = spriteSheet.load_image(self.spriteWidth * 7,0,self.spriteWidth, self.spriteHeight)     
-        imageShootingRight3 = spriteSheet.load_image(self.spriteWidth * 8,0,self.spriteWidth, self.spriteHeight)     
-        imageShootingRight4 = spriteSheet.load_image(self.spriteWidth * 9,0,self.spriteWidth, self.spriteHeight)  
+        imageCharStillLeft = spriteSheet.load_image(self.spriteWidth * 7,0,self.spriteWidth, self.spriteHeight)
 
-        deadRight = spriteSheet.load_image(self.spriteWidth * 10,0,self.spriteWidth, self.spriteHeight)  
-        deadRight2 = spriteSheet.load_image(self.spriteWidth * 11,0,self.spriteWidth, self.spriteHeight) 
-        deadRight3 = spriteSheet.load_image(self.spriteWidth * 12,0,self.spriteWidth, self.spriteHeight) 
-        deadRight4 = spriteSheet.load_image(self.spriteWidth * 13,0,self.spriteWidth, self.spriteHeight) 
+        imagecharMoveLeft = spriteSheet.load_image(self.spriteWidth * 8,0,self.spriteWidth, self.spriteHeight)
+        imagecharMoveLeft2 = spriteSheet.load_image(self.spriteWidth * 9,0,self.spriteWidth, self.spriteHeight)
+        imagecharMoveLeft3 = spriteSheet.load_image(self.spriteWidth * 10,0,self.spriteWidth, self.spriteHeight)
 
-        ducking = spriteSheet.load_image(self.spriteWidth * 14,0,self.spriteWidth, self.spriteHeight) 
-        ducking2 = spriteSheet.load_image(self.spriteWidth * 15,0,self.spriteWidth, self.spriteHeight) 
-        ducking3 = spriteSheet.load_image(self.spriteWidth * 16,0,self.spriteWidth, self.spriteHeight) 
+        imageJumpingLeft = spriteSheet.load_image(self.spriteWidth * 11,0,self.spriteWidth, self.spriteHeight)
+        imageJumpingLeft2 = spriteSheet.load_image(self.spriteWidth * 12,0,self.spriteWidth, self.spriteHeight)
+        imageJumpingLeft3 = spriteSheet.load_image(self.spriteWidth * 13,0,self.spriteWidth, self.spriteHeight)
 
-        falling1 = spriteSheet.load_image(self.spriteWidth * 17,0,self.spriteWidth, self.spriteHeight) 
-        falling2 = spriteSheet.load_image(self.spriteWidth * 18,0,self.spriteWidth, self.spriteHeight) 
+        imageShootingRight = spriteSheet.load_image(self.spriteWidth * 14,0,self.spriteWidth, self.spriteHeight)     
+        imageShootingRight2 = spriteSheet.load_image(self.spriteWidth * 15,0,self.spriteWidth, self.spriteHeight)     
+        imageShootingRight3 = spriteSheet.load_image(self.spriteWidth * 16,0,self.spriteWidth, self.spriteHeight)     
+        imageShootingRight4 = spriteSheet.load_image(self.spriteWidth * 17,0,self.spriteWidth, self.spriteHeight)  
+
+        deadRight = spriteSheet.load_image(self.spriteWidth * 18,0,self.spriteWidth, self.spriteHeight)  
+        deadRight2 = spriteSheet.load_image(self.spriteWidth * 19,0,self.spriteWidth, self.spriteHeight) 
+        deadRight3 = spriteSheet.load_image(self.spriteWidth * 20,0,self.spriteWidth, self.spriteHeight) 
+        deadRight4 = spriteSheet.load_image(self.spriteWidth * 21,0,self.spriteWidth, self.spriteHeight) 
+
+        ducking = spriteSheet.load_image(self.spriteWidth * 22,0,self.spriteWidth, self.spriteHeight) 
+        ducking2 = spriteSheet.load_image(self.spriteWidth * 23,0,self.spriteWidth, self.spriteHeight) 
+        ducking3 = spriteSheet.load_image(self.spriteWidth * 24,0,self.spriteWidth, self.spriteHeight) 
+
+        falling1 = spriteSheet.load_image(self.spriteWidth * 25,0,self.spriteWidth, self.spriteHeight) 
+        falling2 = spriteSheet.load_image(self.spriteWidth * 26,0,self.spriteWidth, self.spriteHeight) 
 
         playerProjectile = pygame.image.load("assets\sprites\PlayerShot.png").convert_alpha()
 
@@ -92,8 +104,10 @@ class LevelManager():
         self.fruitImages = [fruit, fruit2, fruit3, fruit4]
 
         jumpBlock = pygame.image.load("assets\sprites\\jumpBlock.png").convert_alpha()
+        jumpBlock2 = pygame.image.load("assets\sprites\\jumpBlock2.png").convert_alpha()
+        self.jumpBlockImages = [jumpBlock, jumpBlock2]
 
-        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft, imageCharMoveRight ,imageJumpingLeft, imageJumpingRight, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4, ducking, ducking2,ducking3, falling1,falling2]
+        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft,imagecharMoveLeft2,imagecharMoveLeft3,imageCharMoveRight, imageCharMoveRight2 ,imageCharMoveRight3 ,imageJumpingLeft,imageJumpingLeft2,imageJumpingLeft3, imageJumpingRight, imageJumpingRight2, imageJumpingRight3, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4, ducking, ducking2,ducking3, falling1,falling2]
         self.platformImages = [platformStart, platformSmall, platformBig, platformEnd]
         self.parallaxImages = [para0, para1, para2, para3] #BACKGROUNDS
         self.effectImages = [splat,splat2,splat3]
@@ -102,7 +116,7 @@ class LevelManager():
         self.game_state = GameState.get_instance()
         self.currentLevel = self.game_state.return_level()
      
-        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages,  self.fruitImages, self.effectImages, self.soundEffects, jumpBlock)
+        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages,  self.fruitImages, self.effectImages, self.soundEffects, self.jumpBlockImages)
 
 
     def runLevel(self):

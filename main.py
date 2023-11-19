@@ -1,6 +1,6 @@
 # Import standard modules.
 import sys
- 
+import os
 # Import non-standard modules.
 import pygame
 from pygame.locals import *
@@ -9,6 +9,7 @@ from core.stateManager import State, GameState
 from core.screens.menu import Menu
 from core.screens.levelManager import LevelManager, Level
 from core.screens.death import Death
+from core.screens.gameOver import GameOver
 from core.screens.win import Win
 
 def update(dt):
@@ -43,6 +44,38 @@ def draw(screen):
   
   # Flip the display so that the things we drew actually show up.
   pygame.display.flip()
+
+def load_high_score():
+        try:
+            with open("high_score.txt", "r") as file:
+                high_score_str = file.read()
+                if high_score_str.isdigit():
+                    high_score = int(high_score_str)
+                    print("High score loaded successfully:", high_score)
+                    return high_score
+                else:
+                    print("Invalid high score format in the file.")
+                    return None
+        except IOError as e:
+            print("Error loading high score:", str(e))
+            return None
+        
+def save_high_score():
+  try:        
+      gameState = GameState.get_instance()
+      if gameState.check_high_score_updated() == False:
+        highScore = load_high_score()
+        currentScore = gameState.get_score()
+        if(currentScore > highScore):
+          with open("high_score.txt", "w") as file:         
+              file.write(str(gameState.get_score()))
+              print("High score saved successfully.")
+        else:
+          print("Not a high score.")
+
+        gameState.set_high_score_updated(True)
+  except IOError as e:
+      print("Error saving high score:", str(e))
  
 def runPyGame():
   # Initialise PyGame.
@@ -59,13 +92,13 @@ def runPyGame():
   
   # Main game loop.
   dt = 1/fps # dt is the time since last frame.
-  menu_options = ["Start Game", "Controls", "About", "Quit Game"]
-  menu = Menu(menu_options, screen_width)
+  menu = Menu(screen_width, screen_height, 500,100)
 
   currentLevel = Level.ONE
   
   deadImg = pygame.image.load("assets\sprites\dead.png").convert_alpha()
   deathScreen = Death(screen_width, screen_height, deadImg)
+  gameOverScreen = GameOver(screen_width, screen_height, deadImg)
   winImg = pygame.image.load("assets\sprites\win.png").convert_alpha()
   winBg = pygame.image.load("assets\sprites\para0.png").convert_alpha()
   winScreen = Win(screen_width, screen_height,winImg, winBg)
@@ -75,25 +108,30 @@ def runPyGame():
   switchLevel = False
   
   while True: # Loop forever!
-
     if gameState.state == State.MENU:
       #run menu  
+      gameState.resetLives()
       menu.draw(screen)
-      menu.render_options()
 
     if gameState.state == State.GAME:
-      #run level 1   
+      #run level 1  
+      gameState.set_high_score_updated(False)
       levelMan = LevelManager(currentLevel, screen, screen_width, screen_height)
       levelMan.runLevel()
       switchLevel = True
 
     
     if gameState.state == State.DEATH:
-      deathScreen.display(screen)
+      deathScreen.display(screen, gameState.get_score())
       deathScreen.handle_event(event,screen)
 
+    if gameState.state == State.GAME_OVER:
+      save_high_score()
+      gameOverScreen.display(screen, gameState.get_score())
+      gameOverScreen.handle_event(event,screen)
+
     if gameState.state == State.WIN:
-      winScreen.display(screen)
+      winScreen.display(screen, gameState.get_score())
       winScreen.handle_event(event,screen)      
       if switchLevel:
         gameState.next_level()

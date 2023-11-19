@@ -18,11 +18,8 @@ class Win:
         self.soundManager.load_sound_effect("Win", "assets\sounds\Win.wav")
         self.soundPlayed = False
     
-    def display(self, screen):
+    def display(self, screen, score):
         screen.fill((0, 0, 0))
-
-        game_state = GameState.get_instance()
-        game_state.get_score()
   
         screen.blit(self.winBg, (0,0))
         screen.blit(self.cont_text, self.cont_text_rect)
@@ -32,7 +29,7 @@ class Win:
             self.soundManager.play_sound_effect("Win", 5)
             self.soundPlayed = True
 
-        scoreText = self.font.render("SCORE: " + str(game_state.get_score()), True, (0, 255, 0))
+        scoreText = self.font.render("SCORE: " + str(score), True, (0, 255, 0))
         score_text_rect = scoreText.get_rect()
         score_text_rect.x = (self.screen_width / 2) - 100
         score_text_rect.y = (self.screen_height / 2 ) - 200

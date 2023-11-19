@@ -17,7 +17,7 @@ from assets.objects.fruit import Fruit
 from assets.objects.jumpBlock import JumpBlock
 
 class Engine():
-    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list, jumpBlockImage:list):
+    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list, jumpBlockImages:list):
         self.screen = screen
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -34,7 +34,8 @@ class Engine():
         self.playerImages = playerImages
         self.platformImages = platformImages
         self.effectImages = effectImages
-        self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages)
+        gameState = GameState.get_instance()
+        self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages, gameState.get_score())
         
         self.level_builder = LevelBuilder(currentLevel, screen_width, screen_height, 40)
         self.levelData = self.level_builder.load_level()
@@ -52,7 +53,7 @@ class Engine():
 
         self.enemyGroup = []
 
-        self.jumpBlockImage = jumpBlockImage
+        self.jumpBlockImages = jumpBlockImages
 
         
         self.noMovement = False
@@ -71,15 +72,24 @@ class Engine():
         self.backgroundManagerMtn = BackgroundManager(self.player, self.screen,  self.screen_height, self.screen_width, self.parallaxImages[3], 3)
         
 
-        self.projectileImage = self.playerImages[10]
+        self.projectileImage = self.playerImages[18]
         self.projectilesInAir = []
 
         self.playerImageLeftStill = self.playerImages[0]
         self.playerImageRightStill = self.playerImages[1]
         self.playerImageLeftMoving = self.playerImages[2] 
-        self.playerImageRightMoving = self.playerImages[3]
-        self.playerImageLeftJumping = self.playerImages[4] 
-        self.playerImageRightJumping = self.playerImages[5]
+        self.playerImageLeftMoving2 = self.playerImages[3] 
+        self.playerImageLeftMoving3 = self.playerImages[4] 
+        self.playerImageRightMoving = self.playerImages[5]
+        self.playerImageRightMoving2 = self.playerImages[6]
+        self.playerImageRightMoving3 = self.playerImages[7]
+        self.playerImageLeftJumping = self.playerImages[8] 
+        self.playerImageLeftJumping2 = self.playerImages[9] 
+        self.playerImageLeftJumping3 = self.playerImages[10] 
+        self.playerImageRightJumping = self.playerImages[11]
+        self.playerImageRightJumping2 = self.playerImages[12]
+        self.playerImageRightJumping3 = self.playerImages[13]
+
         self.lastDirection = Direction.RIGHT
         
         self.playerOnPlatform = False
@@ -137,7 +147,7 @@ class Engine():
                     newFruit = Fruit(xCoods, currentCoods[1], self.fruitImages[0], self.fruitImages)
                     self.fruits.append(newFruit)
                 elif char == '^': #jumpBlock:
-                    newJumpBlock = JumpBlock(xCoods, currentCoods[1], self.jumpBlockImage)
+                    newJumpBlock = JumpBlock(xCoods, currentCoods[1], self.jumpBlockImages[0])
                     self.jumpBlocks.append(newJumpBlock)
                 elif char == '<': #start lvl platform
                     if self.buildStartPlatform:
@@ -354,11 +364,11 @@ class Engine():
             if self.player.shooting:
                 print("SHOOTING")
                 if self.player.shootingTicks > 0 and self.player.shootingTicks < 50:
-                    self.player.ActiveSprite(self.playerImages[6])
+                    self.player.ActiveSprite(self.playerImages[15])
                 elif self.player.shootingTicks > 50 and self.player.shootingTicks < 100:
-                    self.player.ActiveSprite(self.playerImages[7])
+                    self.player.ActiveSprite(self.playerImages[16])
                 elif self.player.shootingTicks > 100 and self.player.shootingTicks < 150:
-                    self.player.ActiveSprite(self.playerImages[8])   
+                    self.player.ActiveSprite(self.playerImages[17])   
                     newProjectile = Projectile(self.player.rect.x + 20, self.player.rect.y + 65, self.projectileImage)
                     self.projectilesInAir.append(newProjectile)
                     self.objects.add(newProjectile)        
@@ -366,9 +376,19 @@ class Engine():
                     self.player.shootingTicks = 0
             #jumping
             elif self.player.jumping and self.lastDirection == Direction.RIGHT:
-                self.player.ActiveSprite(self.playerImageRightJumping)
+                if self.ticks % 2 == 0:
+                    self.player.ActiveSprite(self.playerImageRightJumping)
+                elif self.ticks % 2 == 2:
+                    self.player.ActiveSprite(self.playerImageRightJumping2)
+                else:
+                    self.player.ActiveSprite(self.playerImageRightJumping3)
             elif self.player.jumping and self.lastDirection == Direction.LEFT:
-                self.player.ActiveSprite(self.playerImageLeftJumping)
+                if self.ticks % 2 == 0:
+                    self.player.ActiveSprite(self.playerImageLeftJumping)
+                elif self.ticks % 2 == 2:
+                    self.player.ActiveSprite(self.playerImageLeftJumping2)
+                else:
+                    self.player.ActiveSprite(self.playerImageLeftJumping3)
             #still
             elif not self.player.moving and self.lastDirection == Direction.RIGHT:
                 self.player.ActiveSprite(self.playerImageRightStill)
@@ -376,9 +396,19 @@ class Engine():
                 self.player.ActiveSprite(self.playerImageLeftStill)
             #moving
             elif self.player.moving and self.lastDirection == Direction.RIGHT:
-                self.player.ActiveSprite(self.playerImageRightMoving)
+                if self.ticks % 2 == 0:
+                    self.player.ActiveSprite(self.playerImageRightMoving2)
+                elif self.ticks % 2 == 2:
+                    self.player.ActiveSprite(self.playerImageRightMoving3)
+                else:
+                    self.player.ActiveSprite(self.playerImageRightMoving)
             elif self.player.moving and self.lastDirection == Direction.LEFT:
-                self.player.ActiveSprite(self.playerImageLeftMoving)
+                if self.ticks % 2 == 0:
+                    self.player.ActiveSprite(self.playerImageLeftMoving2)
+                elif self.ticks % 2 == 2:
+                    self.player.ActiveSprite(self.playerImageLeftMoving3)
+                else:
+                    self.player.ActiveSprite(self.playerImageLeftMoving)
             
             
             
@@ -402,11 +432,11 @@ class Engine():
                     self.player.ducked = True
                     self.player.Duck()
                 if self.player.duckingTicks > 0 and self.player.duckingTicks < 20:
-                    self.player.ActiveSpriteAndResize(self.playerImages[14], 40, 40)
+                    self.player.ActiveSpriteAndResize(self.playerImages[23], 40, 40)
                 elif self.player.duckingTicks > 20 and self.player.duckingTicks < 40:
-                    self.player.ActiveSpriteAndResize(self.playerImages[15], 40, 40)
+                    self.player.ActiveSpriteAndResize(self.playerImages[24], 40, 40)
                 elif self.player.duckingTicks > 40:
-                    self.player.ActiveSpriteAndResize(self.playerImages[16], 40, 40)  
+                    self.player.ActiveSpriteAndResize(self.playerImages[25], 40, 40)  
                     
             
             if self.player.ducked and not keys[pygame.K_s]:
@@ -419,9 +449,9 @@ class Engine():
             if not self.playerOnPlatform and not self.player.jumping and not self.player.fallAfterJump and self.player.rect.y > 300:
                 self.player.fallingTicks += 1
                 if self.player.fallingTicks > 0 and self.player.fallingTicks < 70:
-                    self.player.ActiveSprite(self.playerImages[17])
+                    self.player.ActiveSprite(self.playerImages[26])
                 elif self.player.fallingTicks > 70:
-                    self.player.ActiveSprite(self.playerImages[18])
+                    self.player.ActiveSprite(self.playerImages[27])
             else:
                 self.player.fallingTicks = 0
             
@@ -442,8 +472,16 @@ class Engine():
             for block in self.jumpBlocks:
                 if self.collisionDetect.check_collisionTop(self.player.rect, block.collideRect):
                     self.player.jumpBoost = True
+                    if block.hit:
+                        block.ActiveSprite(self.jumpBlockImages[0])
+                        block.hit = False
+                    else:
+                        block.ActiveSprite(self.jumpBlockImages[1])
+                        block.hit = True
+
                     print("COLLISION")
                     break
+                
 
             if self.player.jumpBoost:
                 self.player.JumpBoost()
@@ -528,8 +566,13 @@ class Engine():
                 engineOn = False
                 #dead
                 gameState = GameState.get_instance()
-                gameState.state = State.DEATH
-                gameState.set_score(self.player.score)
+                gameState.remove_player_life()
+                if gameState.get_player_life() < 0:
+                    gameState.state = State.GAME_OVER
+                else:
+                    gameState.state = State.DEATH
+                    gameState.set_score(self.player.score)
+                
 
             #draw
             
@@ -539,6 +582,7 @@ class Engine():
                 engineOn = False
                 #win
                 gameState = GameState.get_instance()
+                gameState.set_score(self.player.score)
                 gameState.state = State.WIN
 
         self.soundManager.stop_all_sound_effects()
@@ -550,9 +594,7 @@ class Engine():
     def draw(self):
         # Clear the screen
         self.screen.fill("black")
-
         self.objects.draw(self.screen)
-
         self.player.draw(self.screen)
         # self.player.draw_collision_rect(self.screen)
         # for platform in self.platforms:
@@ -585,7 +627,7 @@ class Engine():
         # Create a translucent box behind the score
         level_box = pygame.Surface((level_rect.width, level_rect.height))
         level_box.set_alpha(200)  # Set the alpha value to control the transparency (0 is fully transparent, 255 is fully opaque)
-        level_box.fill((128, 128, 128))  # Set the color of the box (gray in this case)
+        level_box.fill((29,118,76))  # Set the color of the box (gray in this case)
         self.screen.blit(level_box, level_rect.topleft)
 
         # Blit the text surface onto the screen
