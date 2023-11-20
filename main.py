@@ -97,8 +97,11 @@ def runPyGame():
   currentLevel = Level.ONE
   
   deadImg = pygame.image.load("assets\sprites\dead.png").convert_alpha()
-  deathScreen = Death(screen_width, screen_height, deadImg)
-  gameOverScreen = GameOver(screen_width, screen_height, deadImg)
+  deathBackground = pygame.image.load("assets\sprites\deathBackground.png").convert_alpha()
+  deathScreen = Death(screen_width, screen_height, deadImg, deathBackground)
+
+  gameOverBackground = pygame.image.load("assets\sprites\gameOverBackground.png").convert_alpha()
+  gameOverScreen = GameOver(screen_width, screen_height, deadImg, gameOverBackground)
   winImg = pygame.image.load("assets\sprites\win.png").convert_alpha()
   winBg = pygame.image.load("assets\sprites\para0.png").convert_alpha()
   winScreen = Win(screen_width, screen_height,winImg, winBg)
@@ -127,6 +130,9 @@ def runPyGame():
 
     if gameState.state == State.GAME_OVER:
       save_high_score()
+      gameState.set_score(0)
+      gameState.resetLives()
+      gameState.resetLevels()
       gameOverScreen.display(screen, gameState.get_score())
       gameOverScreen.handle_event(event,screen)
 
