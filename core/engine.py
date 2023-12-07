@@ -15,9 +15,10 @@ from assets.objects.projectile import Projectile
 from assets.objects.splat import Splat
 from assets.objects.fruit import Fruit
 from assets.objects.jumpBlock import JumpBlock
+from assets.objects.diamond import Diamond
 
 class Engine():
-    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list, jumpBlockImages:list):
+    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list, jumpBlockImages:list, diamondImages:list):
         self.screen = screen
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -47,6 +48,7 @@ class Engine():
         self.enemies = []
         self.fruits = []
         self.jumpBlocks = []
+        self.diamonds = []
         
         self.fruitImages = fruitImages
         self.enemyImages = enemyImages
@@ -74,6 +76,9 @@ class Engine():
 
         self.projectileImage = self.playerImages[18]
         self.projectilesInAir = []
+
+        self.diamondImages = diamondImages
+        self.diamonds = []
 
         self.playerImageLeftStill = self.playerImages[0]
         self.playerImageRightStill = self.playerImages[1]
@@ -107,6 +112,7 @@ class Engine():
         self.generateObjects(self.levelData)
 
         self.ticks = 0
+        self.playerPos = self.player.rect.x
         
     def generateObjects(self, levelData):
         currentCoods = (0,0)
@@ -174,6 +180,10 @@ class Engine():
                     self.platforms.append(newPlatform)
                     self.buildPlatform = False   
                     print(f"Platform Built and Added")  
+                elif char == 'D': #end building platform
+                    newDiamond = Diamond(xCoods, currentCoods[1], self.diamondImages[0], self.diamondImages)
+                    self.diamonds.append(newDiamond)  
+                    print(f"Diamond Added")  
         print("LOOP ENDED...build over...")           
                 
 
@@ -232,6 +242,12 @@ class Engine():
             self.objects.add(fruit)
 
         print("Fruits added...")
+
+        #diamond
+        for diamond in self.diamonds:
+            self.objects.add(diamond)
+
+        print("Diamonds added...")
 
         #sound
         self.soundManager.load_sound_effect("Laser", self.soundEffects[0])
@@ -315,12 +331,15 @@ class Engine():
             stuck = False
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:      
                 self.lastDirection = Direction.RIGHT
+                self.playerPos += 1
                 if not self.player.ducked:
                     #enemies
                     for fruit in self.fruits:
                         fruit.update(Direction.RIGHT, self.noMovement)
                     for block in self.jumpBlocks:
                         block.update(Direction.RIGHT, self.noMovement)
+                    for diamond in self.diamonds:
+                        diamond.update(Direction.RIGHT, self.noMovement)
                     self.player.Action(True, Direction.RIGHT)    
                     self.backgroundManagerHill.update(Direction.RIGHT, self.noMovement, bg_distance)                   
                     self.backgroundManagerMtn.update(Direction.RIGHT, self.noMovement, bg_distance2)  
@@ -332,12 +351,15 @@ class Engine():
             #MOVING LEFT
             elif keys[pygame.K_LEFT] or keys[pygame.K_a]:             
                 self.lastDirection = Direction.LEFT
+                self.playerPos -= 1
                 if not self.player.ducked:
                     #enemies           
                     for fruit in self.fruits:
                         fruit.update(Direction.LEFT, self.noMovement)
                     for block in self.jumpBlocks:
                         block.update(Direction.LEFT, self.noMovement)
+                    for diamond in self.diamonds:
+                        diamond.update(Direction.LEFT, self.noMovement)
                     self.player.Action(True, Direction.LEFT)
                     self.backgroundManagerHill.update(Direction.LEFT, self.noMovement, bg_distance)    
                     self.backgroundManagerMtn.update(Direction.LEFT, self.noMovement, bg_distance2)    
@@ -361,13 +383,27 @@ class Engine():
         #environment                               
         #set sprites
             #shooting
-            if self.player.shooting:
+            if self.player.shooting and self.player.upgradeLVL == 0:
                 print("SHOOTING")
+                self.projectileImage = self.playerImages[18]
                 if self.player.shootingTicks > 0 and self.player.shootingTicks < 50:
                     self.player.ActiveSprite(self.playerImages[15])
-                elif self.player.shootingTicks > 50 and self.player.shootingTicks < 100:
+                elif self.player.shootingTicks >= 50 and self.player.shootingTicks < 100:
                     self.player.ActiveSprite(self.playerImages[16])
-                elif self.player.shootingTicks > 100 and self.player.shootingTicks < 150:
+                elif self.player.shootingTicks >= 100 and self.player.shootingTicks < 150:
+                    self.player.ActiveSprite(self.playerImages[17])   
+                    newProjectile = Projectile(self.player.rect.x + 20, self.player.rect.y + 65, self.projectileImage)
+                    self.projectilesInAir.append(newProjectile)
+                    self.objects.add(newProjectile)        
+                    self.player.shooting = False
+                    self.player.shootingTicks = 0
+            elif self.player.shooting and self.player.upgradeLVL > 0:
+                self.projectileImage = self.playerImages[28]
+                if self.player.shootingTicks > 0 and self.player.shootingTicks < 25:
+                    self.player.ActiveSprite(self.playerImages[15])
+                elif self.player.shootingTicks >= 25 and self.player.shootingTicks < 50:
+                    self.player.ActiveSprite(self.playerImages[16])
+                elif self.player.shootingTicks >= 50 and self.player.shootingTicks < 75:
                     self.player.ActiveSprite(self.playerImages[17])   
                     newProjectile = Projectile(self.player.rect.x + 20, self.player.rect.y + 65, self.projectileImage)
                     self.projectilesInAir.append(newProjectile)
@@ -467,6 +503,21 @@ class Engine():
                         fruit.addedScore = True
                         self.objects.remove(fruit)
 
+            #diamonds
+            for diamond in self.diamonds:
+                if not diamond.eaten:
+                    if self.collisionDetect.check_collisionFruit(self.player.rect, diamond.collideRect):
+                        diamond.collided = True
+                        self.player.Upgrade()
+                        print("Player collided diamond")
+                        self.player.shooting = False
+                        self.player.shootingTicks = 0
+                else:
+                    if not diamond.addedScore:
+                        self.player.AddToScore(diamond.score)
+                        diamond.addedScore = True
+                        self.objects.remove(diamond)
+
             
             #jump blocks
             for block in self.jumpBlocks:
@@ -486,10 +537,13 @@ class Engine():
             if self.player.jumpBoost:
                 self.player.JumpBoost()
                     
-                    
+            print("player " + str(self.playerPos)) 
                 
             #enemies              
             for enemy in self.enemies:   
+                print(enemy.originX)
+                if self.playerPos + 500 > enemy.originX:         
+                    enemy.activated = True
                 if not self.objects.__contains__(enemy):
                     enemy.reset()
                     self.objects.add(enemy)
@@ -502,16 +556,13 @@ class Engine():
                         splat = Splat(enemy.rect.x, enemy.rect.y, self.effectImages[0])
                         self.objects.add(splat)
                         self.splats.append(splat)    
-                        enemy.SetSplat(True)
-             
-                      
-                    
+                        enemy.SetSplat(True)                    
                 elif enemy.dead:
                     if self.enemies.__contains__(enemy):
                         self.enemies.remove(enemy)
                     if self.objects.__contains__(enemy):
                         self.objects.remove(enemy)
-                else:    
+                elif enemy.activated:    
                     speed = 2                
                     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                         enemy.UpdateEnemyRight(speed)
@@ -532,7 +583,7 @@ class Engine():
                                 enemy.Hit()
                                 self.player.AddToScore(enemy.score)
                                 enemy.playSound = False
-          
+                
 
             #death
             if self.player.rect.top > self.screen_height:
@@ -610,6 +661,10 @@ class Engine():
             if fruit.collided:
                 fruit.display_fruity_score(self.screen)
 
+        for diamond in self.diamonds:
+            #fruit.draw_collision_rect(self.screen)
+            if diamond.collided:
+                diamond.display_fruity_score(self.screen)
         #level count
         # Create a text surface with the player's score
         level_text = self.font.render(f"Level: {self.currentLevel}", True, (255, 255, 255))  # You can change the color (here, white) as needed

@@ -107,7 +107,18 @@ class LevelManager():
         jumpBlock2 = pygame.image.load("assets\sprites\\jumpBlock2.png").convert_alpha()
         self.jumpBlockImages = [jumpBlock, jumpBlock2]
 
-        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft,imagecharMoveLeft2,imagecharMoveLeft3,imageCharMoveRight, imageCharMoveRight2 ,imageCharMoveRight3 ,imageJumpingLeft,imageJumpingLeft2,imageJumpingLeft3, imageJumpingRight, imageJumpingRight2, imageJumpingRight3, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4, ducking, ducking2,ducking3, falling1,falling2]
+        diamond = pygame.image.load("assets\sprites\\diamond.png").convert_alpha()
+        diamond2 = pygame.image.load("assets\sprites\\diamond2.png").convert_alpha()
+        diamond3 = pygame.image.load("assets\sprites\\diamond3.png").convert_alpha()
+        diamond4 = pygame.image.load("assets\sprites\\diamond4.png").convert_alpha()
+        self.diamondImages = [diamond,diamond2,diamond3,diamond4]
+
+        playerProjectileUpgraded = pygame.image.load("assets\sprites\\PlayerShotUpgraded.png").convert_alpha()
+        upgradeEffect = pygame.image.load("assets\sprites\\upgradeEffect.png").convert_alpha()
+        upgradeEffect2 = pygame.image.load("assets\sprites\\upgradeEffect2.png").convert_alpha()
+        upgradeEffect3 =  pygame.image.load("assets\sprites\\upgradeEffect3.png").convert_alpha()
+
+        self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft,imagecharMoveLeft2,imagecharMoveLeft3,imageCharMoveRight, imageCharMoveRight2 ,imageCharMoveRight3 ,imageJumpingLeft,imageJumpingLeft2,imageJumpingLeft3, imageJumpingRight, imageJumpingRight2, imageJumpingRight3, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4, ducking, ducking2,ducking3, falling1,falling2, playerProjectileUpgraded, upgradeEffect, upgradeEffect2, upgradeEffect3]
         self.platformImages = [platformStart, platformSmall, platformBig, platformEnd]
         self.parallaxImages = [para0, para1, para2, para3] #BACKGROUNDS
         self.effectImages = [splat,splat2,splat3]
@@ -116,7 +127,7 @@ class LevelManager():
         self.game_state = GameState.get_instance()
         self.currentLevel = self.game_state.return_level()
      
-        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages,  self.fruitImages, self.effectImages, self.soundEffects, self.jumpBlockImages)
+        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages,  self.fruitImages, self.effectImages, self.soundEffects, self.jumpBlockImages, self.diamondImages)
 
 
     def runLevel(self):

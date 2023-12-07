@@ -18,7 +18,7 @@ class GameState:
             self.scoreUpdated = False
             self.state = State.MENU
             self.score = 0
-            self.level = 3
+            self.level = 1
             self.playerLives = 3
 
     @staticmethod

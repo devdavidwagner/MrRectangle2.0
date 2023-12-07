@@ -42,6 +42,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self.initX = 0
         self.initY = 0
+        self.activated = False
         
     def reset(self):
 
@@ -69,9 +70,9 @@ class Enemy(pygame.sprite.Sprite):
     def LoadImages(self, images):
         self.enemyImages = images    
     
-    def Activate(self, spawn):
-        if spawn != self.isSpawned:
-            self.moving = True\
+    def Activate(self):
+        self.moving = True
+        self.activated = True
             
     def UpdateEnemyRight(self,speed):
         self.movingTicks += 1

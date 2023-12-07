@@ -67,11 +67,19 @@ class Player(pygame.sprite.Sprite):
         self.life_box = pygame.Surface((self.life_rect.width, self.life_rect.height))
         self.life_box.set_alpha(200)  # Set the alpha value to control the transparency (0 is fully transparent, 255 is fully opaque)
         self.life_box.fill(self.boxColor)  # Set the color of the box 
+
+        self.upgradeLVL = 0
+        self.upgrading = False
+        self.upgradeTicks = 0
         
 
     
     def AddToScore(self, add):
         self.score += add 
+
+    def Upgrade(self):
+        self.upgradeLVL +=1
+        self.upgrading = True
 
     def Hit(self):
         self.dying = True
@@ -99,6 +107,7 @@ class Player(pygame.sprite.Sprite):
             self.dyingTicks = 0
             self.dead = True
             self.dying = False
+            self.upgradeLVL = 0
 
 
     def draw(self, screen):
@@ -123,6 +132,20 @@ class Player(pygame.sprite.Sprite):
         screen.blit(score_box, score_rect.topleft)
         # Blit the text surface onto the screen
         screen.blit(score_text, (score_rect.x + score_rect.width /4, score_rect.y ))
+        
+        if self.upgrading:
+            self.upgradeTicks += 1
+            if self.upgradeTicks < 25:
+                screen.blit(pygame.transform.scale(self.playerImages[29], (100,100)), (self.rect.left - self.rect.width /2, self.rect.y))
+            elif self.upgradeTicks >= 25 and self.upgradeTicks < 50:
+                screen.blit(pygame.transform.scale(self.playerImages[30], (100,100)), (self.rect.left - self.rect.width /2, self.rect.y))
+            elif self.upgradeTicks >= 50 and self.upgradeTicks < 75:
+                screen.blit(pygame.transform.scale(self.playerImages[31], (100,100)), (self.rect.left - self.rect.width /2, self.rect.y))
+            elif self.upgradeTicks >= 75 and self.upgradeTicks < 100:
+                screen.blit(pygame.transform.scale(self.playerImages[31], (100,100)), (self.rect.left - self.rect.width /2, self.rect.y))
+            else:
+                self.upgrading = False
+                self.upgradeTicks = 0
         
          
 

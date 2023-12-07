@@ -105,6 +105,7 @@ def runPyGame():
   winImg = pygame.image.load("assets\sprites\win.png").convert_alpha()
   winBg = pygame.image.load("assets\sprites\para0.png").convert_alpha()
   winScreen = Win(screen_width, screen_height,winImg, winBg)
+
   isAlive = True
   gameState = GameState.get_instance()
   gameState.state = State.MENU
