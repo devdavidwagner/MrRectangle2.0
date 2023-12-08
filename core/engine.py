@@ -16,9 +16,10 @@ from assets.objects.splat import Splat
 from assets.objects.fruit import Fruit
 from assets.objects.jumpBlock import JumpBlock
 from assets.objects.diamond import Diamond
+from assets.objects.playerLife import PlayerrLIfe
 
 class Engine():
-    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list, jumpBlockImages:list, diamondImages:list):
+    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list, jumpBlockImages:list, diamondImages:list, playerImagesUpgrade1:list):
         self.screen = screen
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -36,11 +37,12 @@ class Engine():
         self.platformImages = platformImages
         self.effectImages = effectImages
         gameState = GameState.get_instance()
-        self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages, gameState.get_score())
+        self.playerImagesUpgrade1 = playerImagesUpgrade1
+        self.player = Player(self.startingXPlayer, self.startingYPlayer, self.playerImages[1], self.playerImages, gameState.get_score(), self.playerImagesUpgrade1)
         
         self.level_builder = LevelBuilder(currentLevel, screen_width, screen_height, 40)
         self.levelData = self.level_builder.load_level()
-       
+        
 
         self.startPlatform = None
         self.endPlatform = None
@@ -387,11 +389,20 @@ class Engine():
                 print("SHOOTING")
                 self.projectileImage = self.playerImages[18]
                 if self.player.shootingTicks > 0 and self.player.shootingTicks < 50:
-                    self.player.ActiveSprite(self.playerImages[15])
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImages[15])
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[15])
                 elif self.player.shootingTicks >= 50 and self.player.shootingTicks < 100:
-                    self.player.ActiveSprite(self.playerImages[16])
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImages[16])
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[16])
                 elif self.player.shootingTicks >= 100 and self.player.shootingTicks < 150:
-                    self.player.ActiveSprite(self.playerImages[17])   
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImages[17])
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[17])
                     newProjectile = Projectile(self.player.rect.x + 20, self.player.rect.y + 65, self.projectileImage)
                     self.projectilesInAir.append(newProjectile)
                     self.objects.add(newProjectile)        
@@ -400,11 +411,20 @@ class Engine():
             elif self.player.shooting and self.player.upgradeLVL > 0:
                 self.projectileImage = self.playerImages[28]
                 if self.player.shootingTicks > 0 and self.player.shootingTicks < 25:
-                    self.player.ActiveSprite(self.playerImages[15])
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImages[15])
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[15])
                 elif self.player.shootingTicks >= 25 and self.player.shootingTicks < 50:
-                    self.player.ActiveSprite(self.playerImages[16])
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImages[16])
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[16])
                 elif self.player.shootingTicks >= 50 and self.player.shootingTicks < 75:
-                    self.player.ActiveSprite(self.playerImages[17])   
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImages[17])
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[17]) 
                     newProjectile = Projectile(self.player.rect.x + 20, self.player.rect.y + 65, self.projectileImage)
                     self.projectilesInAir.append(newProjectile)
                     self.objects.add(newProjectile)        
@@ -413,38 +433,81 @@ class Engine():
             #jumping
             elif self.player.jumping and self.lastDirection == Direction.RIGHT:
                 if self.ticks % 2 == 0:
-                    self.player.ActiveSprite(self.playerImageRightJumping)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageRightJumping)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[11])
+                    
                 elif self.ticks % 2 == 2:
-                    self.player.ActiveSprite(self.playerImageRightJumping2)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageRightJumping2)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[12])
                 else:
-                    self.player.ActiveSprite(self.playerImageRightJumping3)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageRightJumping3)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[13])
             elif self.player.jumping and self.lastDirection == Direction.LEFT:
                 if self.ticks % 2 == 0:
-                    self.player.ActiveSprite(self.playerImageLeftJumping)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageLeftJumping)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[8])
                 elif self.ticks % 2 == 2:
-                    self.player.ActiveSprite(self.playerImageLeftJumping2)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageLeftJumping2)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[9])
                 else:
-                    self.player.ActiveSprite(self.playerImageLeftJumping3)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageLeftJumping3)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[10])
             #still
             elif not self.player.moving and self.lastDirection == Direction.RIGHT:
-                self.player.ActiveSprite(self.playerImageRightStill)
+                if self.player.upgradeLVL == 0:
+                    self.player.ActiveSprite(self.playerImageRightStill)
+                if self.player.upgradeLVL > 0:
+                    self.player.ActiveSprite(self.playerImagesUpgrade1[1])
             elif not self.player.moving and self.lastDirection == Direction.LEFT:
-                self.player.ActiveSprite(self.playerImageLeftStill)
+                if self.player.upgradeLVL == 0:
+                    self.player.ActiveSprite(self.playerImageLeftStill)
+                if self.player.upgradeLVL > 0:
+                    self.player.ActiveSprite(self.playerImagesUpgrade1[0])
             #moving
             elif self.player.moving and self.lastDirection == Direction.RIGHT:
                 if self.ticks % 2 == 0:
-                    self.player.ActiveSprite(self.playerImageRightMoving2)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageRightMoving2)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[6])
                 elif self.ticks % 2 == 2:
-                    self.player.ActiveSprite(self.playerImageRightMoving3)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageRightMoving3)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[7])
                 else:
-                    self.player.ActiveSprite(self.playerImageRightMoving)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageRightMoving)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[5])
             elif self.player.moving and self.lastDirection == Direction.LEFT:
                 if self.ticks % 2 == 0:
-                    self.player.ActiveSprite(self.playerImageLeftMoving2)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageLeftMoving2)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[3])
                 elif self.ticks % 2 == 2:
-                    self.player.ActiveSprite(self.playerImageLeftMoving3)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageLeftMoving3)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[4])
                 else:
-                    self.player.ActiveSprite(self.playerImageLeftMoving)
+                    if self.player.upgradeLVL == 0:
+                        self.player.ActiveSprite(self.playerImageLeftMoving)
+                    if self.player.upgradeLVL > 0:
+                        self.player.ActiveSprite(self.playerImagesUpgrade1[2])
             
             
             
@@ -476,7 +539,10 @@ class Engine():
                     
             
             if self.player.ducked and not keys[pygame.K_s]:
-                self.player.ActiveSpriteAndResize(self.playerImages[0], 40, 80)  
+                if self.player.upgradeLVL == 0:
+                        self.player.ActiveSpriteAndResize(self.playerImages[0], 40, 80)  
+                if self.player.upgradeLVL > 0:
+                    self.player.ActiveSpriteAndResize(self.playerImagesUpgrade1[0], 40, 80)  
                 self.player.duckingTicks = 0  
                 self.player.ducked = False
                 self.player.rect.y -= 40
@@ -577,7 +643,7 @@ class Engine():
 
                     if len(self.projectilesInAir) > 0:
                         for projectile in self.projectilesInAir: 
-                            if pygame.Rect.colliderect(enemy.rect, projectile.collideRect):
+                            if pygame.Rect.colliderect(enemy.rect, projectile.collideRect) and enemy.rect.left < self.screen_width - 200:
                                 self.projectilesInAir.remove(projectile)
                                 self.objects.remove(projectile)
                                 enemy.Hit()

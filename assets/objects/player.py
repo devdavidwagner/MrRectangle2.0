@@ -7,10 +7,9 @@ class Direction(Enum):
     RIGHT = 2
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, image, playerImages, score):
+    def __init__(self, x, y, image, playerImages, score, playerImagesUpgrade1):
         super().__init__()
-        self.image = image
-  
+        self.image = image 
         self.rect = self.image.get_bounding_rect()
         self.rect.height = 80
         self.rect.width = 40
@@ -70,9 +69,9 @@ class Player(pygame.sprite.Sprite):
 
         self.upgradeLVL = 0
         self.upgrading = False
-        self.upgradeTicks = 0
-        
+        self.upgradeTicks = 0 
 
+        self.playerImagesUpgrade1 = playerImagesUpgrade1   
     
     def AddToScore(self, add):
         self.score += add 
@@ -85,7 +84,10 @@ class Player(pygame.sprite.Sprite):
         self.dying = True
 
     def InstaDie(self):
-        self.ActiveSprite(self.playerImages[17])
+        if self.upgradeLVL == 0:
+            self.ActiveSprite(self.playerImages[17])
+        if self.upgradeLVL > 0:
+            self.ActiveSprite(self.playerImagesUpgrade1[17])
         self.dyingTicks = 0
         self.dead = True
 
@@ -95,15 +97,27 @@ class Player(pygame.sprite.Sprite):
         self.shooting = False
         self.dyingTicks += 1
         if self.dyingTicks > 0 and len(self.playerImages) > 0:
-            self.ActiveSprite(self.playerImages[20])
+            if self.upgradeLVL == 0:
+                self.ActiveSprite(self.playerImages[20])
+            if self.upgradeLVL > 0:
+                self.ActiveSprite(self.playerImagesUpgrade1[20])
         if self.dyingTicks > 120 and len(self.playerImages) > 0:
-            self.ActiveSprite(self.playerImages[21])
+            if self.upgradeLVL == 0:
+                self.ActiveSprite(self.playerImages[21])
+            if self.upgradeLVL > 0:
+                self.ActiveSprite(self.playerImagesUpgrade1[21])
         if self.dyingTicks > 240 and len(self.playerImages)> 0:
-            self.ActiveSprite(self.playerImages[22])
+            if self.upgradeLVL == 0:
+                self.ActiveSprite(self.playerImages[22])
+            if self.upgradeLVL > 0:
+                self.ActiveSprite(self.playerImagesUpgrade1[22])
          
 
         if self.dyingTicks > 360:
-            self.ActiveSprite(self.playerImages[20])
+            if self.upgradeLVL == 0:
+                self.ActiveSprite(self.playerImages[20])
+            if self.upgradeLVL > 0:
+                self.ActiveSprite(self.playerImagesUpgrade1[20])
             self.dyingTicks = 0
             self.dead = True
             self.dying = False
@@ -118,21 +132,15 @@ class Player(pygame.sprite.Sprite):
         score_rect = score_text.get_rect()
         score_rect.width = score_rect.width  * 2
         score_rect.height = score_rect.height * 1.5
-
-
         # Set the position of the text (top-left corner)
-        score_rect.topleft = (10, 10)  # Adjust the position as needed
-
-        
+        score_rect.topleft = (10, 10)  # Adjust the position as needed       
         # Create a translucent box behind the score
         score_box = pygame.Surface((score_rect.width, score_rect.height))
         score_box.set_alpha(200)  # Set the alpha value to control the transparency (0 is fully transparent, 255 is fully opaque)
         score_box.fill(self.boxColor)  # Set the color of the box (gray in this case)
-
         screen.blit(score_box, score_rect.topleft)
         # Blit the text surface onto the screen
-        screen.blit(score_text, (score_rect.x + score_rect.width /4, score_rect.y ))
-        
+        screen.blit(score_text, (score_rect.x + score_rect.width /4, score_rect.y ))    
         if self.upgrading:
             self.upgradeTicks += 1
             if self.upgradeTicks < 25:
@@ -146,9 +154,7 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.upgrading = False
                 self.upgradeTicks = 0
-        
-         
-
+                
         if self.prevScore != self.score and not self.scoreAddedTo:
             self.diff = self.score - self.prevScore
             self.diff = abs(self.diff)
@@ -246,7 +252,6 @@ class Player(pygame.sprite.Sprite):
         self.image =  pygame.transform.scale(image, (width, height))
         self.rect.height = height
         
-    
     def draw_collision_rect(self, screen):
         pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
 
