@@ -18,7 +18,7 @@ class GameState:
             self.scoreUpdated = False
             self.state = State.MENU
             self.score = 0
-            self.level = 1
+            self.level = 3
             self.playerLives = 3
 
     @staticmethod
@@ -26,7 +26,7 @@ class GameState:
         if GameState.__instance is None:
             GameState.__instance = GameState()
         return GameState.__instance
-    
+
     def resetLives(self):
         self.playerLives = 3
     
@@ -38,6 +38,9 @@ class GameState:
 
     def get_player_life(self):
         return self.playerLives
+    
+    def add_player_life(self):
+        self.playerLives +=1
     
     def set_score(self, new_score):
         self.score = new_score

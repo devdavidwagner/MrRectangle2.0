@@ -131,10 +131,19 @@ class LevelManager():
         diamond4 = pygame.image.load("assets\sprites\\diamond4.png").convert_alpha()
         self.diamondImages = [diamond,diamond2,diamond3,diamond4]
 
+        life = pygame.image.load("assets\sprites\\life.png").convert_alpha()
+        life2 = pygame.image.load("assets\sprites\\life2.png").convert_alpha()
+        life3 = pygame.image.load("assets\sprites\\life3.png").convert_alpha()
+        life4 = pygame.image.load("assets\sprites\\life4.png").convert_alpha()
+        self.lifeImages = [life,life2,life3,life4]
+
         playerProjectileUpgraded = pygame.image.load("assets\sprites\\PlayerShotUpgraded.png").convert_alpha()
         upgradeEffect = pygame.image.load("assets\sprites\\upgradeEffect.png").convert_alpha()
         upgradeEffect2 = pygame.image.load("assets\sprites\\upgradeEffect2.png").convert_alpha()
         upgradeEffect3 =  pygame.image.load("assets\sprites\\upgradeEffect3.png").convert_alpha()
+
+        spikeImage =  pygame.image.load("assets\sprites\\spikes.png").convert_alpha()
+        self.spikeImage = spikeImage
 
         self.playerImages = [imageCharStillLeft, imageCharStillRight, imagecharMoveLeft,imagecharMoveLeft2,imagecharMoveLeft3,imageCharMoveRight, imageCharMoveRight2 ,imageCharMoveRight3 ,imageJumpingLeft,imageJumpingLeft2,imageJumpingLeft3, imageJumpingRight, imageJumpingRight2, imageJumpingRight3, imageShootingRight, imageShootingRight2, imageShootingRight3,imageShootingRight4, playerProjectile, deadRight, deadRight2, deadRight3, deadRight4, ducking, ducking2,ducking3, falling1,falling2, playerProjectileUpgraded, upgradeEffect, upgradeEffect2, upgradeEffect3]
         self.playerImagesUpgrade1 = [imageCharStillLeftUpgrade1, imageCharStillRightUpgrade1, imagecharMoveLeftUpgrade1,imagecharMoveLeft2Upgrade1,imagecharMoveLeft3Upgrade1,imageCharMoveRightUpgrade1, imageCharMoveRight2Upgrade1 ,imageCharMoveRight3Upgrade1 ,imageJumpingLeftUpgrade1,imageJumpingLeft2Upgrade1,imageJumpingLeft3Upgrade1, imageJumpingRightUpgrade1, imageJumpingRight2Upgrade1, imageJumpingRight3Upgrade1, imageShootingRightUpgrade1, imageShootingRight2Upgrade1, imageShootingRight3Upgrade1,imageShootingRight4Upgrade1, playerProjectile, deadRightUpgrade1, deadRight2Upgrade1, deadRight3Upgrade1, deadRight4Upgrade1, duckingUpgrade1, ducking2Upgrade1,ducking3Upgrade1, falling1Upgrade1,falling2Upgrade1, playerProjectileUpgraded, upgradeEffect, upgradeEffect2, upgradeEffect3]
@@ -146,7 +155,7 @@ class LevelManager():
         self.game_state = GameState.get_instance()
         self.currentLevel = self.game_state.return_level()
      
-        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages,  self.fruitImages, self.effectImages, self.soundEffects, self.jumpBlockImages, self.diamondImages, self.playerImagesUpgrade1)
+        self.engine = Engine(self.screen, self.currentLevel, self.screen_width, self.screen_height, self.playerImages,  self.platformImages, self.parallaxImages, self.enemyImages,  self.fruitImages, self.effectImages, self.soundEffects, self.jumpBlockImages, self.diamondImages, self.playerImagesUpgrade1, self.lifeImages, self.spikeImage)
 
 
     def runLevel(self):

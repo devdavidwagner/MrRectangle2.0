@@ -16,10 +16,11 @@ from assets.objects.splat import Splat
 from assets.objects.fruit import Fruit
 from assets.objects.jumpBlock import JumpBlock
 from assets.objects.diamond import Diamond
-from assets.objects.playerLife import PlayerrLIfe
+from assets.objects.playerLife import PlayerLife
+from assets.objects.spike import Spike
 
 class Engine():
-    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list, jumpBlockImages:list, diamondImages:list, playerImagesUpgrade1:list):
+    def __init__(self, screen, currentLevel, screen_width, screen_height , playerImages:list, platformImages:list, parallaxImages:list, enemyImages:list, fruitImages:list, effectImages:list, soundEffects:list, jumpBlockImages:list, diamondImages:list, playerImagesUpgrade1:list, playerLifeImages:list, spikeImage):
         self.screen = screen
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -42,7 +43,10 @@ class Engine():
         
         self.level_builder = LevelBuilder(currentLevel, screen_width, screen_height, 40)
         self.levelData = self.level_builder.load_level()
+
+        self.playerLifeImages = playerLifeImages
         
+        self.spikeImage = spikeImage
 
         self.startPlatform = None
         self.endPlatform = None
@@ -51,6 +55,8 @@ class Engine():
         self.fruits = []
         self.jumpBlocks = []
         self.diamonds = []
+        self.playerLives = []
+        self.spikes = []
         
         self.fruitImages = fruitImages
         self.enemyImages = enemyImages
@@ -186,6 +192,14 @@ class Engine():
                     newDiamond = Diamond(xCoods, currentCoods[1], self.diamondImages[0], self.diamondImages)
                     self.diamonds.append(newDiamond)  
                     print(f"Diamond Added")  
+                elif char == 'L':
+                    newLife = PlayerLife(xCoods, currentCoods[1], self.playerLifeImages[0], self.playerLifeImages)
+                    self.playerLives.append(newLife)
+                    print(f"life added")
+                elif char == 'S':
+                    newSpike = Spike(xCoods, currentCoods[1], self.spikeImage)
+                    self.spikes.append(newSpike)
+                    print(f"spike added")
         print("LOOP ENDED...build over...")           
                 
 
@@ -250,6 +264,14 @@ class Engine():
             self.objects.add(diamond)
 
         print("Diamonds added...")
+
+        for life in self.playerLives:
+            self.objects.add(life)
+
+        print("Lives added...")
+
+        for spike in self.spikes:
+            self.objects.add(spike)
 
         #sound
         self.soundManager.load_sound_effect("Laser", self.soundEffects[0])
@@ -342,6 +364,10 @@ class Engine():
                         block.update(Direction.RIGHT, self.noMovement)
                     for diamond in self.diamonds:
                         diamond.update(Direction.RIGHT, self.noMovement)
+                    for life in self.playerLives:
+                        life.update(Direction.RIGHT, self.noMovement)
+                    for spike in self.spikes:
+                        spike.update(Direction.RIGHT, self.noMovement)
                     self.player.Action(True, Direction.RIGHT)    
                     self.backgroundManagerHill.update(Direction.RIGHT, self.noMovement, bg_distance)                   
                     self.backgroundManagerMtn.update(Direction.RIGHT, self.noMovement, bg_distance2)  
@@ -362,6 +388,10 @@ class Engine():
                         block.update(Direction.LEFT, self.noMovement)
                     for diamond in self.diamonds:
                         diamond.update(Direction.LEFT, self.noMovement)
+                    for life in self.playerLives:
+                        life.update(Direction.LEFT, self.noMovement)
+                    for spike in self.spikes:
+                        spike.update(Direction.LEFT, self.noMovement)
                     self.player.Action(True, Direction.LEFT)
                     self.backgroundManagerHill.update(Direction.LEFT, self.noMovement, bg_distance)    
                     self.backgroundManagerMtn.update(Direction.LEFT, self.noMovement, bg_distance2)    
@@ -583,6 +613,20 @@ class Engine():
                         self.player.AddToScore(diamond.score)
                         diamond.addedScore = True
                         self.objects.remove(diamond)
+            #diamonds
+            for life in self.playerLives:
+                if not life.eaten:
+                    if self.collisionDetect.check_collisionFruit(self.player.rect, life.collideRect) and not life.collided:
+                        life.collided = True
+                        gameState = GameState.get_instance()
+                        gameState.add_player_life()
+                        self.player.playerLives += 1
+                        print("Player collided life")
+                else:
+                    if not life.addedScore:
+                        self.player.AddToScore(life.score)
+                        life.addedScore = True
+                        self.objects.remove(life)                
 
             
             #jump blocks
@@ -598,16 +642,21 @@ class Engine():
 
                     print("COLLISION")
                     break
+
+            #spikes 
+            for spike in self.spikes:
+                if self.collisionDetect.check_collisionTop(self.player.rect, spike.collideRect):
+                    self.player.dying = True
+                    
+                    print("COLLISION")
+                    break
                 
 
             if self.player.jumpBoost:
                 self.player.JumpBoost()
-                    
-            print("player " + str(self.playerPos)) 
-                
+                                    
             #enemies              
             for enemy in self.enemies:   
-                print(enemy.originX)
                 if self.playerPos + 500 > enemy.originX:         
                     enemy.activated = True
                 if not self.objects.__contains__(enemy):
@@ -731,6 +780,11 @@ class Engine():
             #fruit.draw_collision_rect(self.screen)
             if diamond.collided:
                 diamond.display_fruity_score(self.screen)
+
+        for life in self.playerLives:
+            #fruit.draw_collision_rect(self.screen)
+            if life.collided:
+                life.display_fruity_score(self.screen)
         #level count
         # Create a text surface with the player's score
         level_text = self.font.render(f"Level: {self.currentLevel}", True, (255, 255, 255))  # You can change the color (here, white) as needed
