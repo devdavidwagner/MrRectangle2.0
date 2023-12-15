@@ -650,6 +650,11 @@ class Engine():
                     
                     print("COLLISION")
                     break
+                if self.collisionDetect.check_collisionFruit(self.player.rect, spike.collideRect):
+                    self.player.dying = True
+                    
+                    print("COLLISION")
+                    break
                 
 
             if self.player.jumpBoost:
